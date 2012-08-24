@@ -114,7 +114,53 @@ public class DefaultActivity extends TabActivity {
 		return true;
 	}
 	
+	private void InitLeagues() {
+		InitLeagues(null, null);
+	}
+	
 	private void InitLeagues(String leagueName, String season) {
+		//Search for league files
+		LookForLeagues();
+		
+		//If no leagues found -> display empty screen
+		if (mLeagues.size() == 0) {
+			SetUIMode(UIMode.NoLeagues);
+		} else {
+			SetUIMode(UIMode.Normal);
+			FillLeagueCombo();
+			//No league specified -> show first league
+			if (leagueName == null) {
+				mSpinnerLeague.setSelection(0);
+			} else {
+				//set spinners to correct values
+				
+			}
+			
+			
+		}
+		
+	}
+
+	private void FillLeagueCombo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void SetUIMode(UIMode mode) {
+		// TODO Auto-generated method stub
+		
+		if (mode == UIMode.Normal) {
+			// Create the normal mode
+		} else {
+			//create the no league screen
+			
+		}
+		
+	}
+
+	// Scans the application file directory and loads all league files it finds.
+	private void LookForLeagues() {
+		// TODO Auto-generated method stub
 		
 	}
 	
