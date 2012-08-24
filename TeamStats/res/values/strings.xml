@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World!</string>
+    <string name="app_name">TeamStats</string>
+
+    <string name="menuleague">League</string>
+    <string name="menuleaguenew">New&#8230;</string>
+    <string name="menuleaguedelete">Delete</string>
+    <string name="menuleagueedit">Edit</string>
+    <string name="menuleagueeditleague">Edit League&#8230;</string>
+    <string name="menuleagueeditteams">Edit Teams&#8230;</string>
+    <string name="menuleagueeditfixtures">Edit Fixtures&#8230;</string>
+    <string name="menuleagueorder">League order&#8230;</string>
+    <string name="menuleagueexit">Exit</string>
+    <string name="menuliveupdate">LiveUpdate</string>
+    <string name="menuliveupdateselect">Select leagues&#8230;</string>
+    <string name="menuliveupdateupdateselected">Update selected leagues</string>
+    <string name="menuliveupdateupdatethis">Update this league</string>
+    <string name="menuliveupdatearchive">Download from archive&#8230;</string>
+    <string name="menuliveupdatelog">View log&#8230;</string>
+    <string name="menuabout">About</string>
+    <string name="noleaguesfound">No league files were found.</string>
+    <string name="deleteleague">Delete league</string>
+    <string name="reallydelete">Do you really want to delete </string>
+    
+    <string name="tablepage">Table</string>
+    <string name="matchesall">All</string>
+    <string name="matcheshome">Home</string>
+    <string name="matchesaway">Away</string>
+    <string name="roundsall">All</string>
+    <string name="roundsfirst">First</string>
+    <string name="roundslast">Last</string>
+ 
+    <string name="matchpage">Matches</string>
+    <string name="round">Round</string>
+    <string name="edit">Edit</string>
+    
+    <string name="teampage">Teams</string>
+    <string name="viewstats">Stats</string>
+    <string name="viewmatches">Matches</string>
+    <string name="x1stats">15</string>
+    <string name="x2stats">160</string>
+    <string name="x3stats">220</string>
+    <string name="x4stats">150</string>
+    <string name="tableposition">Table position:</string>
+    <string name="matchesplayed">Matches played:</string>
+    <string name="wins">Wins:</string>
+    <string name="draws">Draws:</string>
+    <string name="losses">Losses:</string>
+    <string name="goalsfor">Goals for:</string>
+    <string name="goalsagainst">Goals against:</string>
+    <string name="frequentresult">Most frequent result:</string>
+    <string name="times">times</string>
+    <string name="homeletter">H</string>
+    <string name="awayletter">A</string>
+    <string name="winletter">W</string>
+    <string name="drawletter">D</string>
+    <string name="lossletter">L</string>
+    
+	<string name="leaguepage">League</string>
+    <string name="homewins">Won by home team:</string>
+    <string name="awaywins">Won by away team:</string>
+    <string name="goals">Goals scored:</string>
+    <string name="homegoals">Goals by home team:</string>
+    <string name="awaygoals">Goals by away team:</string>
+    <string name="x1">10</string>
+    <string name="x2">170</string>
+    <string name="x3">230</string>
+    <string name="x4">150</string>    
+    
+    <string name="titlenew">New league</string>
+    <string name="titleedit">Edit league</string>
+    <string name="leaguename">League name:</string>
+    <string name="season">Season:</string>
+    <string name="split">Season is split over two years</string>
+    <string name="numberofteams">Number of teams:</string>
+    <string name="pointswin">Points for win:</string>
+    <string name="pointsdraw">draw:</string>
+    <string name="pointsloss">loss:</string>
+    <string name="sorttable">Sort table by:</string>
+    <string name="goaldiffgoals">Goal diff., goals for</string>
+    <string name="goaldiffwins">Goal diff., wins</string>
+    <string name="winsgoaldiff">Wins, goal diff.</string>
+    <string name="winsgoals">Wins, goals for</string>
+    <string name="goalsgoaldiff">Goals for, goal diff.</string>
+    <string name="goalswins">Goals for, wins</string>
+    <string name="lines">Lines in table:</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="musthavename">The league must have a name.</string>
+    <string name="invalidchars">The league name contains invalid characters.</string>
+    <string name="invalidteams">The league must have between 2 and 32 teams.</string>
+    <string name="namealreadyused">The league name is already used. Try a different name or season.</string>
+    
+    <string name="teamform">Edit teams</string>
+    <string name="name">Name:</string>
+    <string name="points">Points:</string>
+    <string name="save">Save</string>
+    <string name="close">Close</string>
+    <string name="teamnameempty">The team name cannot be empty.</string>
+    
+	<string name="fixtureform">Edit fixtures</string>
+    <string name="addround">Add round</string>
+    <string name="deleteround">Delete round</string>
+    <string name="deletematch">Delete match</string>
+    <string name="addmatch">Add match</string>
+    <string name="selectmatch">Select a match to delete.</string>
+    <string name="cannotdeletefirst">You cannot delete the first round.</string>
+    <string name="onlydeletelast">You can only delete the last round.</string>
+    <string name="onlydeleteempty">You can only delete empty rounds. Delete all the matches first.</string>
+    
+    <string name="leagueorderform">Edit order</string>
+    <string name="up">Up</string>
+    <string name="down">Down</string>
+    
+    <string name="selectroundform">Select round</string>
+    <string name="selectroundheader">Select round:</string>
+    
+    <string name="liveupdateselectform">LiveUpdate select leagues</string>
+    <string name="selectleagueslabel">Select the leagues you want to keep updated:</string>
+    <string name="selectnewleagueslabel">Select the newly added leagues you want to add to your download list:</string>
+    <string name="downloadinglist">Downloading league list&#8230;</string>
+    <string name="noconnection">No connection available. You need to be connected to the internet to run LiveUpdate.</string>
+    
+    <string name="liveupdatearchiveform">LiveUpdate archive</string>
+    <string name="selectleagueslabeldownload">Select leagues to download:</string>
+    <string name="leaguecountlabel">{0} league(s) selected</string>
+    <string name="download">Download now</string>
+    
+    <string name="liveupdatelogform">LiveUpdate log</string>
+    <string name="lastloglabel">Log from last LiveUpdate:</string>
+    
+    <string name="liveupdatedownloadform">LiveUpdate</string>
+    <string name="connecting">Connecting&#8230;</string>
+    <string name="checkingnew">Checking for new leagues&#8230;</string>
+    <string name="downloading">Downloading&#8230;</string>
+    <string name="remaining">{0} leagues remaining</string>
+    <string name="canceling">Canceling, please wait&#8230;</string>
+    
+    <string name="started">Started </string>
+    <string name="finished">Finished </string>
+    <string name="downloadingleagues">Downloading leagues:</string>
+    <string name="downloadingleague">Downloading league:</string>
+    <string name="downloadcancelled">Download cancelled by user</string>
+    <string name="newleaguesfound">{0} new league(s) found</string>
+    <string name="nonewleaguesfound">No new leagues found</string>
+    <string name="failed">failed</string>
+    <string name="noconnection2">No connection available</string>
+    <string name="errors">Some errors occurred (see above)</string>
+    <string name="invalidfile">The file is not a valid TeamStats file</string>
+    <string name="noleagues">No leagues are selected for LiveUpdate. Go to LiveUpdate-Select leagues to select the leagues you want to keep updated.</string>
+    <string name="leaguenotavailable">This league is not available on the server.</string>
+    
+    <string name="aboutform">About</string>
+    <string name="email">email:</string>
+    
+    
+    
+</resources>

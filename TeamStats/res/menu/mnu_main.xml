@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/mnuFile" android:title="@string/menuleague">
+        <menu>
+            <item android:id="@+id/mnuNewLeague" android:title="@string/menuleaguenew"/>
+            
+            <item android:id="@+id/mnuDeleteLeague" android:title="@string/menuleaguedelete"/><group android:id="@+id/mnuEdit">
+                <item android:id="@+id/mnuEditLeague" android:title="@string/menuleagueeditleague"/><item android:id="@+id/mnuEditTeams" android:title="@string/menuleagueeditteams"/>
+                <item android:id="@+id/mnuEditFixtures" android:title="@string/menuleagueeditfixtures"/>
+            </group>
+            
+            <item android:id="@+id/mnuLeagueOrder" android:title="@string/menuleagueorder"/>
+            <item android:id="@+id/mnuExit" android:title="@string/menuleagueexit"/>
+        </menu>
+    </item>
+    <item android:id="@+id/mnuUpdate" android:title="@string/menuliveupdate">
+        <menu>
+            <item android:id="@+id/mnuSelectLeagues" android:title="@string/menuliveupdateselect"/>
+            <item android:id="@+id/mnuDownloadSelected" android:title="@string/menuliveupdateupdateselected"/>
+            <item android:id="@+id/mnuDowloadThisLeague" android:title="@string/menuliveupdateupdatethis"/>
+            <item android:id="@+id/mnuDownloadArchive" android:title="@string/menuliveupdatearchive"/>
+            <item android:id="@+id/mnuLog" android:title="@string/menuliveupdatelog"/>
+        </menu>
+    </item>
+    <item android:id="@+id/mnuAbout" android:title="@string/menuabout"></item>
+    
+
+</menu>
