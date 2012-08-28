@@ -8,13 +8,12 @@
 	    android:layout_height="wrap_content"
 	    android:orientation="horizontal">
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/leagueSpinner"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LEAGUE" />
+        android:layout_height="wrap_content" />
 
     <Spinner
-        android:id="@+id/spinner1"
+        android:id="@+id/seasonSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>
@@ -39,15 +38,19 @@
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
-
-                <LinearLayout
-                    android:id="@+id/tabTable"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/tablepage" >
+                <ScrollView android:id="@+id/tabTable"
+                	android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TableLayout android:id="@+id/tableTableLayout"
+                    	android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:padding="5dp"
+                        android:stretchColumns="*"
+                        android:background="@android:color/white"></TableLayout>
+                </ScrollView>
+                        
 
-                </LinearLayout>
-
+
                 <LinearLayout
                     android:id="@+id/tabMatches"
                     android:layout_width="match_parent"

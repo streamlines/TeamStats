@@ -52,11 +52,16 @@
     <string name="goalsagainst">Goals against:</string>
     <string name="frequentresult">Most frequent result:</string>
     <string name="times">times</string>
+    <string name="playedletter">P</string>
     <string name="homeletter">H</string>
     <string name="awayletter">A</string>
     <string name="winletter">W</string>
     <string name="drawletter">D</string>
     <string name="lossletter">L</string>
+    <string name="forletter">F</string>
+    <string name="againstletter">A</string>
+    <string name="pointsletter">Pts</string>
+    
     
 	<string name="leaguepage">League</string>
     <string name="homewins">Won by home team:</string>

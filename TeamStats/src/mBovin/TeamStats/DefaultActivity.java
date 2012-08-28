@@ -31,6 +31,7 @@ import mBovin.TeamStats.Core.*;
 
 import android.app.Activity;
 import android.app.TabActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,10 +56,15 @@ public class DefaultActivity extends TabActivity {
 	private AppState appstate;
 	private ArrayList<String> LeagueNames = new ArrayList<String>();
 	private ArrayList<String> SeasonNames= new ArrayList<String>();
+	private SharedPreferences savedData;
+	
+	private UIMode mode;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		savedData = getSharedPreferences("TeamStats", MODE_PRIVATE);
+		appstate.Load(savedData);
 		
 		mTabHost = getTabHost();
 		
@@ -69,13 +75,14 @@ public class DefaultActivity extends TabActivity {
 		
 		mTabHost.setCurrentTab(0);
 
+		InitLeagues(appstate.getmCurrentLeaguename(), appstate.getmCurrentSeason());
 		
 		//Test data for LeagueNames
 //		LeagueNames.add("test 1");
 //		LeagueNames.add("Test 2");
 //		LeagueNames.add("Test 3");
 		
-		mSpinnerLeague = (Spinner) findViewById(R.id.spinner1);
+		mSpinnerLeague = (Spinner) findViewById(R.id.leagueSpinner);
 		ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,LeagueNames);
 		adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mSpinnerLeague.setAdapter(adapter1);

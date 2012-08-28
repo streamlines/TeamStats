@@ -24,6 +24,7 @@
  */
 package mBovin.TeamStats.Core;
 
+import java.io.Reader;
 import java.util.ArrayList;
 
 public class LeagueBinaryFile implements ILeagueStore {
@@ -53,15 +54,51 @@ public class LeagueBinaryFile implements ILeagueStore {
 
 	@Override
 	public void LoadHeader(League league) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub - fake data
 	//	AndroidFileIO file = new AndroidFileIO(context.getAssets()); 
 
+		league.setmName("Premier League - FIXED");
+		int year = 2012; //Read Int16
+		league.setmIsSplit(year < 0);
+		league.setmYear(Math.abs(year));
+		
+		league.setmTeamCount(20); //read Byte
+		league.setmRoundCount(38); //read Byte
+		league.setmMatchCount(38*10); //Read Int 16
+		league.setmPlayedMatchCount(21); //Read Int 16
+		
+		league.setmWinPoints(3); //read Byte
+		league.setmDrawPoints(1); //read Byte
+		league.setmLossPoints(0); //read Byte
+		
+		league.setmTableSort(TableSortMethod.Wins_GoalDiff); //read Byte
+		league.setmTableLines(20); //read int 64
+		
 	}
 
 	@Override
 	public ArrayList<Team> LoadTeams(League league) {
 		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Team> listTeams;
+		Object reader = null;
+		
+			listTeams = new ArrayList<Team>(league.getmTeamCount());
+			for (int i = 0; i < league.getmTeamCount(); i++) {
+				listTeams.add(LoadTeam(league,i,reader));
+			}
+		
+		return listTeams;
+	}
+	
+	private Team LoadTeam(League league, int index, Object reader) {
+		Team team = new Team(league, index);
+		
+		// Fake it
+		team.setmName("Team " + index);
+		team.setmBonusPoints(0); //Read SByte
+		team.setmHiddenPoints(0); //Read SByte
+		
+		return team;
 	}
 
 	@Override

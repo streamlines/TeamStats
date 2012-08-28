@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/newTableTableRow"
+    android:background="@android:color/transparent" >
+    
+    
+    <TextView android:id="@+id/positionTextView"
+        android:text="#"></TextView>
+    <TextView android:id="@+id/teamnameTextView"
+        android:text="@string/name"></TextView>
+    <TextView android:id="@+id/playedTextView"
+        android:text="@string/playedletter"></TextView>
+    <TextView android:id="@+id/wonTextView"
+        android:text="@string/winletter"></TextView>
+   	<TextView android:id="@+id/drawTextView"
+        android:text="@string/drawletter"></TextView>
+    <TextView android:id="@+id/lossTextView"
+        android:text="@string/lossletter"></TextView>
+    <TextView android:id="@+id/forTextView"
+        android:text="@string/forletter"></TextView>
+    <TextView android:id="@+id/againstTextView"
+        android:text="@string/againstletter"></TextView>
+    <TextView android:id="@+id/pointsTextView"
+        android:text="@string/pointsletter"></TextView>
+    
+    
+
+</TableRow>
