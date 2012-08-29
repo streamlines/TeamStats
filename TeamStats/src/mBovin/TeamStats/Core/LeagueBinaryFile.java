@@ -24,6 +24,7 @@
  */
 package mBovin.TeamStats.Core;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 
