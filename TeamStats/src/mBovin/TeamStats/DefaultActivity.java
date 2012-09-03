@@ -24,7 +24,11 @@
  */
 package mBovin.TeamStats;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -32,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mBovin.TeamStats.Core.*;
+import mBovin.TeamStats.Utils.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -41,7 +46,9 @@ import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -65,7 +72,7 @@ public class DefaultActivity extends TabActivity {
 	private Spinner mSpinnerSeason;
 	
 	private Map<String, HashMap<String, String>> mLeagues;
-	private AppState appstate;
+	private AppState appstate = new AppState();
 	private ArrayList<String> LeagueNames = new ArrayList<String>();
 	private ArrayList<String> SeasonNames= new ArrayList<String>();
 	private SharedPreferences savedData;
@@ -222,6 +229,11 @@ public class DefaultActivity extends TabActivity {
 		
 	}
 	
+	protected void SelectLeaguesForDownload() {
+		// TODO Auto-generated method stub - Go to Live Update Select Form.
+		
+	}
+
 	private void DownloadSelectedLeagues() {
 		if (appstate.getmDownloadLeagueList().size() > 0) {
 			showDialog(PROGRESS_DIALOG);	
@@ -271,16 +283,37 @@ public class DefaultActivity extends TabActivity {
 
 	// Scans the application file directory and loads all league files it finds.
 	private void LookForLeagues() {
-		// TODO Auto-generated method stub
 		mLeagues = new HashMap<String,HashMap<String, String>>();
+		File path = getFilesDir();
 		
 		String[] fileNames = fileList();
 		for (String fileName : fileNames) {
 			if (fileName.contains(".ts")) {
-				AddLeague(fileName);
+				AddLeague(path + File.separator + fileName);
+			}
+		}
+		
+		if (fileNames.length == 0) {
+			try {
+				
+				AssetManager assets = getAssets();
+				fileNames = assets.list("leagues");
+				for (String fileName : fileNames) {
+					if (fileName.contains(".ts")) {
+						File output = new File(fileName);
+						InputStream iStream = assets.open("leagues/" + fileName);
+						OutputStream oStream = new FileOutputStream(path + File.separator + output);
+						utils.CopyFile(iStream, oStream);
+						AddLeague(path + File.separator + output);
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
+	
+
 	
 	private void AddLeague(String fileName) {
 		LeagueBinaryFile leaguefile;

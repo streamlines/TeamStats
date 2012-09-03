@@ -43,6 +43,8 @@ public class AppState {
 	private String		mLiveUpdateLog;
 	
 	private LeagueViewMode mMode = LeagueViewMode.Table;
+	
+	public AppState() {}
 
 	public League getCurrentLeague() {
 		return new League(new LeagueBinaryFile(mCurrentFilename));

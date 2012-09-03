@@ -24,9 +24,15 @@
  */
 package mBovin.TeamStats.Core;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+
+import android.content.Context;
 
 public class LeagueBinaryFile implements ILeagueStore {
 	
@@ -54,9 +60,28 @@ public class LeagueBinaryFile implements ILeagueStore {
 
 
 	@Override
-	public void LoadHeader(League league) {
-		// TODO Auto-generated method stub - fake data
-	//	AndroidFileIO file = new AndroidFileIO(context.getAssets()); 
+	public void LoadHeader(League league)  {
+		File file = new File(mFilename); 
+		DataInputStream ds = null;
+		try {
+			ds = new DataInputStream(new FileInputStream(file));
+			byte[] namebuffer = new byte[4];
+			for (int z=1; z<5; z++) {
+				namebuffer[z-1] = ds.readByte();
+			}
+			String idStr = new String(namebuffer);
+			if (!(idStr.equals("mbTS"))) {
+				ds.close();
+				throw new IOException("Not a TeamStats data file");
+			}
+			
+			int fileVersion = ds.readByte();
+			// TO DO Create reader with current sample data.
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		league.setmName("Premier League - FIXED");
 		int year = 2012; //Read Int16
