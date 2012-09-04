@@ -45,11 +45,11 @@ public class TableTeam implements Comparable<Object> {
 		return mTeam.getmName();
 	}
 	
-	public int getIndex() {
+	public Integer getIndex() {
 		return mTeam.getmIndex();
 	}
 	
-	public int getmPosition() {
+	public Integer getmPosition() {
 		return mPosition;
 	}
 
@@ -57,11 +57,11 @@ public class TableTeam implements Comparable<Object> {
 		this.mPosition = mPosition;
 	}
 
-	public int getmPlayed() {
+	public Integer getmPlayed() {
 		return mPlayed;
 	}
 
-	public int getmWon() {
+	public Integer getmWon() {
 		return mWon;
 	}
 
@@ -70,7 +70,7 @@ public class TableTeam implements Comparable<Object> {
 				((float)mWon/ (float)mPlayed) : 0;
 	}
 
-	public int getmDrawn() {
+	public Integer getmDrawn() {
 		return mDrawn;
 	}
 
@@ -79,7 +79,7 @@ public class TableTeam implements Comparable<Object> {
 				((float)mDrawn/ (float)mPlayed) : 0;
 	}
 
-	public int getmLost() {
+	public Integer getmLost() {
 		return mLost;
 	}
 
@@ -88,7 +88,7 @@ public class TableTeam implements Comparable<Object> {
 				((float)mLost/ (float)mPlayed) : 0;
 	}
 
-	public int getmFor() {
+	public Integer getmFor() {
 		return mFor;
 	}
 
@@ -97,7 +97,7 @@ public class TableTeam implements Comparable<Object> {
 				((float)mFor/ (float)mPlayed) : 0;
 	}
 
-	public int getmAgainst() {
+	public Integer getmAgainst() {
 		return mAgainst;
 	}
 
@@ -106,11 +106,11 @@ public class TableTeam implements Comparable<Object> {
 				((float)mAgainst/ (float)mPlayed) : 0;
 	}
 
-	public int getmGoalDiff() {
+	public Integer getmGoalDiff() {
 		return mGoalDiff;
 	}
 
-	public int getmPoints() {
+	public Integer getmPoints() {
 		return mPoints;
 	}
 

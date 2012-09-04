@@ -22,6 +22,8 @@
         android:text="@string/forletter"></TextView>
     <TextView android:id="@+id/againstTextView"
         android:text="@string/againstletter"></TextView>
+    <TextView android:id="@+id/goalDiffTextView"
+        android:text="@string/goaldiffletter"></TextView>
     <TextView android:id="@+id/pointsTextView"
         android:text="@string/pointsletter"></TextView>
     

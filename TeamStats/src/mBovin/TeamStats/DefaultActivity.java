@@ -44,6 +44,7 @@ import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
@@ -52,6 +53,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -60,6 +62,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TabHost;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import mBovin.TeamStats.R;
@@ -70,6 +75,7 @@ public class DefaultActivity extends TabActivity {
 	private TabHost mTabHost;
 	private Spinner mSpinnerLeague;
 	private Spinner mSpinnerSeason;
+	private TableLayout mTableTableLayout;
 	
 	private Map<String, HashMap<String, String>> mLeagues;
 	private AppState appstate = new AppState();
@@ -96,12 +102,13 @@ public class DefaultActivity extends TabActivity {
 		mTabHost.addTab(mTabHost.newTabSpec("tab_test4").setIndicator(getString(R.string.leaguepage)).setContent(R.id.tableague));
 		
 		mTabHost.setCurrentTab(0);
-
-		InitLeagues(appstate.getmCurrentLeaguename(), appstate.getmCurrentSeason());
 		
+		mTableTableLayout = (TableLayout) findViewById(R.id.tableTableLayout);
 
 		mSpinnerLeague = (Spinner) findViewById(R.id.leagueSpinner);
 		mSpinnerSeason = (Spinner) findViewById(R.id.seasonSpinner);
+
+		InitLeagues(appstate.getmCurrentLeaguename(), appstate.getmCurrentSeason());
 		
 		
 	}
@@ -129,6 +136,10 @@ public class DefaultActivity extends TabActivity {
 			
 		case R.id.mnuNewLeague:
 			NewLeague();
+			break;
+			
+		case R.id.mnuDeleteLeague:
+			DeleteCurrentLeague();
 			break;
 			
 		
@@ -182,8 +193,7 @@ public class DefaultActivity extends TabActivity {
 		if (mode == UIMode.Normal) {
 			// Create the normal mode
 			mSpinnerLeague.setEnabled(true);
-			mSpinnerSeason.setEnabled(true);
-			
+			mSpinnerSeason.setEnabled(true);			
 		} else {
 			//create the no league screen
 			mSpinnerLeague.setEnabled(false);
@@ -198,7 +208,7 @@ public class DefaultActivity extends TabActivity {
 			noLeagueDialog.show();
 		}	
 	}
-	
+		
 	DialogInterface.OnClickListener newLeagueListener = new DialogInterface.OnClickListener() {
 		
 		@Override
@@ -431,9 +441,51 @@ public class DefaultActivity extends TabActivity {
 		String mCurrentFilename = mLeagues.get(appstate.getmCurrentLeaguename()).get(appstate.getmCurrentSeason());
 		
 		appstate.setmCurrentFilename(mCurrentFilename);
+		makeTable(mSpinnerLeague.getSelectedItem().toString(), mSpinnerSeason.getSelectedItem().toString(), mCurrentFilename);
+				
+	}
+
+	private void makeTable(String leagueName, String season, String FileName) {
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		League league = appstate.getCurrentLeague();;
+		// Add additional functionality
+		Table table = new Table(league, true, true, true, -1);
 		
+		View row = inflater.inflate(R.layout.new_table_row, null);
+		mTableTableLayout.addView(row, 0);
+		
+		for (Integer i = 1; i<=league.getmTeamCount(); i++) {
+			TableTeam Teamdata = table.TeamList().get(i-1);
+			View teamline = inflater.inflate(R.layout.new_table_row, null);
+			
+			TextView positionTextView = (TextView) teamline.findViewById(R.id.positionTextView);
+			TextView teamNameTextView = (TextView) teamline.findViewById(R.id.teamnameTextView);
+			TextView playedTextView = (TextView) teamline.findViewById(R.id.playedTextView);
+			TextView wonTextView = (TextView) teamline.findViewById(R.id.wonTextView);
+			TextView drawnTextView = (TextView) teamline.findViewById(R.id.drawTextView);
+			TextView lossTextView = (TextView) teamline.findViewById(R.id.lossTextView);
+			TextView forTextView = (TextView) teamline.findViewById(R.id.forTextView);
+			TextView againstTextView = (TextView) teamline.findViewById(R.id.againstTextView);
+			TextView goalDiffTextView = (TextView) teamline.findViewById(R.id.goalDiffTextView);
+			TextView pointsTextView = (TextView) teamline.findViewById(R.id.pointsTextView);
+			
+			positionTextView.setText(i.toString());
+			teamNameTextView.setText(Teamdata.getName());
+			playedTextView.setText(Teamdata.getmPlayed().toString());
+			wonTextView.setText(Teamdata.getmWon().toString());
+			drawnTextView.setText(Teamdata.getmDrawn().toString());
+			lossTextView.setText(Teamdata.getmLost().toString());
+			forTextView.setText(Teamdata.getmFor().toString());
+			againstTextView.setText(Teamdata.getmAgainst().toString());
+			goalDiffTextView.setText(Teamdata.getmGoalDiff().toString());
+			pointsTextView.setText(Teamdata.getmPoints().toString());
+			
+			mTableTableLayout.addView(teamline, i);
+		}
 		
 	}
+	
 	
 	
 	private class ProgressThread extends Thread {

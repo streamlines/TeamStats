@@ -60,6 +60,7 @@
     <string name="lossletter">L</string>
     <string name="forletter">F</string>
     <string name="againstletter">A</string>
+    <string name="goaldiffletter">+/-</string>
     <string name="pointsletter">Pts</string>
     
     

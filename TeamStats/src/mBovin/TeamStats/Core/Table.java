@@ -98,14 +98,16 @@ public class Table {
 		for (int i = start; i != stop; i += step) {
 			Match match = matchList.get(i);
 			if (mIncludeHome) {
-				TableTeam update = mTeamList.get(match.getmHomeTeamId());
-				update.AddMatch(match, mMaxMatches);
-				mTeamList.set(match.getmHomeTeamId(), update);
+				mTeamList.get(match.getmHomeTeamId()).AddMatch(match, mMaxMatches);
+//				TableTeam update = mTeamList.get(match.getmHomeTeamId());
+//				update.AddMatch(match, mMaxMatches);
+//				mTeamList.set(match.getmHomeTeamId(), update);
 			}
 			if (mIncludeAway) {
-				TableTeam update = mTeamList.get(match.getmAwayTeamId());
-				update.AddMatch(match, mMaxMatches);
-				mTeamList.set(match.getmAwayTeamId(), update);
+				mTeamList.get(match.getmHomeTeamId()).AddMatch(match, mMaxMatches);
+//				TableTeam update = mTeamList.get(match.getmAwayTeamId());
+//				update.AddMatch(match, mMaxMatches);
+//				mTeamList.set(match.getmAwayTeamId(), update);
 			}
 			
 		}

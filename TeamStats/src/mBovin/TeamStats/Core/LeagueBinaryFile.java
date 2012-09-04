@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import android.content.Context;
 
@@ -76,61 +77,157 @@ public class LeagueBinaryFile implements ILeagueStore {
 			}
 			
 			int fileVersion = ds.readByte();
-			// TO DO Create reader with current sample data.
+			namebuffer = new byte[cLeagueNameChars*4];
+			ds.read(namebuffer);
+			String leaguename = new String(namebuffer);
+			league.setmName(leaguename.trim());
+		
+			// YEAR IS NOT WORKING
+			byte[] shortBuffer = new byte[2];
+			ds.read(shortBuffer);
+			
+			//year is stored little-Endian so need to swap the bytes and compare for negative
+			int year = (shortBuffer[0] & 0xFF) | (shortBuffer[1] & 0xFF) << 8;
+			if (year > 10000) {
+				year = year - 65536;
+			}
+			
+			league.setmIsSplit(year < 0);
+			league.setmYear(Math.abs((int) year));
+			
+			league.setmTeamCount((int) ds.readByte());
+			league.setmRoundCount((int) ds.readByte());
+			
+			ds.read(shortBuffer);
+			league.setmMatchCount((shortBuffer[0] & 0xFF) | (shortBuffer[1] & 0xFF) << 8);
+			ds.read(shortBuffer);
+			league.setmPlayedMatchCount((shortBuffer[0] & 0xFF) | (shortBuffer[1] & 0xFF) << 8);
+			
+			league.setmWinPoints((int) ds.readByte());
+			league.setmDrawPoints((int) ds.readByte());
+			league.setmLossPoints((int) ds.readByte());
+			
+			int TableSort = ds.readUnsignedByte();
+			TableSortMethod selected = null;
+			switch (TableSort) {
+			case 0:
+				selected = TableSortMethod.GoalDiff_GoalsFor;
+				break;
+			case 1:
+				selected = TableSortMethod.GoalDiff_Wins;
+				break;
+			case 2:
+				selected = TableSortMethod.Wins_GoalDiff;
+				break;
+			case 3:
+				selected = TableSortMethod.Wins_GoalsFor;
+				break;
+			case 4:
+				selected = TableSortMethod.GoalsFor_GoalDiff;
+				break;
+			case 5:
+				selected = TableSortMethod.GoalsFor_Wins;
+				break;				
+			}
+			league.setmTableSort(selected);
+			byte[] longBuffer = new byte[4];
+			ds.read(longBuffer);
+			league.setmTableLines((longBuffer[0] & 0xFF) | (longBuffer[1] & 0xFF) << 8 | (longBuffer[2] & 0xFF) << 16 | (longBuffer[3] & 0xFF) << 24);
+			ds.close();
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 
-		league.setmName("Premier League - FIXED");
-		int year = 2012; //Read Int16
-		league.setmIsSplit(year < 0);
-		league.setmYear(Math.abs(year));
-		
-		league.setmTeamCount(20); //read Byte
-		league.setmRoundCount(38); //read Byte
-		league.setmMatchCount(38*10); //Read Int 16
-		league.setmPlayedMatchCount(21); //Read Int 16
-		
-		league.setmWinPoints(3); //read Byte
-		league.setmDrawPoints(1); //read Byte
-		league.setmLossPoints(0); //read Byte
-		
-		league.setmTableSort(TableSortMethod.Wins_GoalDiff); //read Byte
-		league.setmTableLines(20); //read int 64
 		
 	}
 
 	@Override
 	public ArrayList<Team> LoadTeams(League league) {
-		// TODO Auto-generated method stub
-		ArrayList<Team> listTeams;
-		Object reader = null;
+		ArrayList<Team> listTeams = null;
+		File file = new File(mFilename); 
+		DataInputStream ds = null;
+		try {
+			ds = new DataInputStream(new FileInputStream(file));
+			// Skip the header
+			byte[] buffer= new byte[cHeaderSize];
+			ds.read(buffer);
 		
 			listTeams = new ArrayList<Team>(league.getmTeamCount());
 			for (int i = 0; i < league.getmTeamCount(); i++) {
-				listTeams.add(LoadTeam(league,i,reader));
+				listTeams.add(LoadTeam(league,i,ds));
 			}
-		
+			ds.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return listTeams;
+		
 	}
 	
-	private Team LoadTeam(League league, int index, Object reader) {
+	private Team LoadTeam(League league, int index, DataInputStream reader) {
 		Team team = new Team(league, index);
 		
-		// Fake it
-		team.setmName("Team " + index);
-		team.setmBonusPoints(0); //Read SByte
-		team.setmHiddenPoints(0); //Read SByte
+		byte[] buffer = new byte[cTeamNameChars*4];
+		try {
+			reader.read(buffer);
+			String teamName = new String(buffer);
+			team.setmName(teamName.trim());
+			team.setmBonusPoints(reader.read()); //Read SByte
+			team.setmHiddenPoints(reader.read()); //Read SByte
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return team;
 	}
 
 	@Override
 	public ArrayList<Match> LoadMatches(League league) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Match> matches = null;
+		File file = new File(mFilename); 
+		DataInputStream ds = null;
+		try {
+			ds = new DataInputStream(new FileInputStream(file));
+			// Skip the header
+			byte[] buffer= new byte[cHeaderSize + (league.getmTeamCount() * cTeamSize)];
+			ds.read(buffer);
+			buffer = null;
+			matches = new ArrayList<Match>(league.getmMatchCount());
+			for (int i = 0; i < league.getmTeamCount(); i++) {
+				matches.add(LoadMatch(league,i,ds));
+			}
+			ds.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return matches;
+		
+	}
+
+	private Match LoadMatch(League league, int index, DataInputStream ds) {
+		Match match= new Match(league, index);
+		
+		byte[] shortBuffer = new byte[2];
+		try {
+			match.setmRound(ds.read());
+			ds.read(shortBuffer);
+			int year = ((shortBuffer[0] & 0xFF) | (shortBuffer[1] & 0xFF) << 8);
+			int month = ds.read();
+			int day = ds.read();
+			match.setmHomeTeamId(ds.read());
+			match.setmAwayTeamId(ds.read());
+			match.setmHomeGoals(ds.readByte());
+			match.setmAwayGoals(ds.readByte());
+			Calendar cal = Calendar.getInstance();
+			cal.set(year, month, day);
+			match.setmDate(cal);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return match;
 	}
 
 	@Override
@@ -166,8 +263,27 @@ public class LeagueBinaryFile implements ILeagueStore {
 	@Override
 	public ArrayList<Match> LoadMatches(League league,
 			MatchFilterPlayed filter, boolean onlyPlayed) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Match> matches = null;
+		File file = new File(mFilename); 
+		DataInputStream ds = null;
+		try {
+			ds = new DataInputStream(new FileInputStream(file));
+			// Skip the header
+			byte[] buffer= new byte[cHeaderSize + (league.getmTeamCount() * cTeamSize)];
+			ds.read(buffer);
+			buffer = null;
+			matches = new ArrayList<Match>(league.getmMatchCount());
+			for (int i = 0; i < league.getmTeamCount(); i++) {
+				Match match = LoadMatch(league,i,ds);
+				if (match.IsPlayed() == onlyPlayed) {
+					matches.add(match);
+				}
+			}
+			ds.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return matches;
 	}
 
 	@Override

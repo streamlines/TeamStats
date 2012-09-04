@@ -40,7 +40,7 @@ public class League {
 	private int		mWinPoints;
 	private int		mDrawPoints;
 	private int		mLossPoints;
-	private int		mTableLines;
+	private long	mTableLines;
 	private TableSortMethod mTableSort;
 	
 	private ArrayList<Team> mTeamList;
@@ -142,12 +142,12 @@ public class League {
 		this.mLossPoints = mLossPoints;
 	}
 
-	public int getmTableLines() {
+	public long getmTableLines() {
 		return mTableLines;
 	}
 
-	public void setmTableLines(int mTableLines) {
-		this.mTableLines = mTableLines;
+	public void setmTableLines(long l) {
+		this.mTableLines = l;
 	}
 
 	public TableSortMethod getmTableSort() {

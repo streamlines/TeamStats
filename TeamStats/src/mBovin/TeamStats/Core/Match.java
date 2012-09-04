@@ -24,6 +24,7 @@
  */
 package mBovin.TeamStats.Core;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import android.text.format.DateFormat;
@@ -37,14 +38,14 @@ public class Match implements Comparable<Object>{
 	private Integer mHomeGoals;
 	private Integer mAwayGoals;
 	private int mRound;
-	private Date mDate;
+	private Calendar mDate;
 	
 	public Match(League league, int index) {
 		mleague = league;
 		mIndex = index;
 	}
 	
-	public Match(League league, int round, Date date, int homeTeamId, int awayTeamId) {
+	public Match(League league, int round, Calendar date, int homeTeamId, int awayTeamId) {
 		mleague = league;
 		mRound = round;
 		mDate = date;
@@ -103,11 +104,11 @@ public class Match implements Comparable<Object>{
 		this.mRound = mRound;
 	}
 
-	public Date getmDate() {
+	public Calendar getmDate() {
 		return mDate;
 	}
 
-	public void setmDate(Date mDate) {
+	public void setmDate(Calendar mDate) {
 		this.mDate = mDate;
 	}
 	
