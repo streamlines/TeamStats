@@ -104,7 +104,7 @@ public class Table {
 //				mTeamList.set(match.getmHomeTeamId(), update);
 			}
 			if (mIncludeAway) {
-				mTeamList.get(match.getmHomeTeamId()).AddMatch(match, mMaxMatches);
+				mTeamList.get(match.getmAwayTeamId()).AddMatch(match, mMaxMatches);
 //				TableTeam update = mTeamList.get(match.getmAwayTeamId());
 //				update.AddMatch(match, mMaxMatches);
 //				mTeamList.set(match.getmAwayTeamId(), update);
