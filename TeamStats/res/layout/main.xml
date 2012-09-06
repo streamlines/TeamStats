@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:layout_gravity="center"
     android:orientation="vertical" >
+
 	<LinearLayout 
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
@@ -45,18 +47,71 @@
                     	android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:padding="5dp"
-                        android:stretchColumns="*"
-                        android:background="@android:color/white"></TableLayout>
+                        android:stretchColumns="*"></TableLayout>
                 </ScrollView>
-                        
-
-
+                        
                 <LinearLayout
                     android:id="@+id/tabMatches"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" 
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
                     android:text="@string/matchpage" >
-                    
+
+                    <LinearLayout
+                        android:id="@+id/tabMatchesTopRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/buttonPreviousRound"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/previous" >
+
+</Button>
+
+                        <TextView
+                            android:id="@+id/RoundTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_weight="1"
+                            android:text="@string/round" >
+
+</TextView>
+
+                        <Button
+                            android:id="@+id/buttonNextRound"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/next" >
+
+</Button>
+                        
+                    </LinearLayout>
+
+                    <ToggleButton
+                        android:id="@+id/toggleButtonEditResults"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textOff="@string/edit"
+                        android:textOn="@string/edit" >
+
+                    </ToggleButton>"
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                    	<TableLayout 
+                        android:id="@+id/roundTableLayout"
+                                            	android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:padding="5dp"
+                        android:stretchColumns="*"></TableLayout>
+                	</ScrollView>
+                        
                 </LinearLayout>
 
                 <LinearLayout

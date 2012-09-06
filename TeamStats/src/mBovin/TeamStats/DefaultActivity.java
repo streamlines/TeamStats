@@ -52,6 +52,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,6 +61,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TableLayout;
@@ -76,12 +78,17 @@ public class DefaultActivity extends TabActivity {
 	private Spinner mSpinnerLeague;
 	private Spinner mSpinnerSeason;
 	private TableLayout mTableTableLayout;
+	private TableLayout mMatchTableLayout;
+	private TextView mRoundTextView;
+	private Button mNextRoundButton;
+	private Button mPreviousRoundButton;
 	
 	private Map<String, HashMap<String, String>> mLeagues;
 	private AppState appstate = new AppState();
 	private ArrayList<String> LeagueNames = new ArrayList<String>();
 	private ArrayList<String> SeasonNames= new ArrayList<String>();
 	private SharedPreferences savedData;
+	private Integer currentround;
 	
 	private UIMode mode;
 
@@ -92,7 +99,7 @@ public class DefaultActivity extends TabActivity {
 		appstate.Load(savedData);
 		
 		mLeagues = new HashMap<String, HashMap<String, String>>();
-		
+		currentround = 1;
 		
 		mTabHost = getTabHost();
 		
@@ -104,13 +111,19 @@ public class DefaultActivity extends TabActivity {
 		mTabHost.setCurrentTab(0);
 		
 		mTableTableLayout = (TableLayout) findViewById(R.id.tableTableLayout);
-
+		mMatchTableLayout = (TableLayout) findViewById(R.id.roundTableLayout);
+		
+		mRoundTextView = (TextView) findViewById(R.id.RoundTextView);
+		mNextRoundButton = (Button) findViewById(R.id.buttonNextRound);
+		mPreviousRoundButton = (Button) findViewById(R.id.buttonPreviousRound);
+		
+		mNextRoundButton.setOnClickListener(NextRoundButtonClicked);
+		mPreviousRoundButton.setOnClickListener(PreviousRoundButtonClicked);
+		
 		mSpinnerLeague = (Spinner) findViewById(R.id.leagueSpinner);
 		mSpinnerSeason = (Spinner) findViewById(R.id.seasonSpinner);
 
 		InitLeagues(appstate.getmCurrentLeaguename(), appstate.getmCurrentSeason());
-		
-		
 	}
 	
 	/* (non-Javadoc)
@@ -152,6 +165,10 @@ public class DefaultActivity extends TabActivity {
 			
 		case R.id.mnuDownloadSelected:
 			DownloadSelectedLeagues();
+			break;
+			
+		case R.id.mnuDowloadThisLeague:
+			DownloadThisLeague();
 			break;
 		
 		default:
@@ -246,51 +263,18 @@ public class DefaultActivity extends TabActivity {
 
 	private void DownloadSelectedLeagues() {
 		if (appstate.getmDownloadLeagueList().size() > 0) {
-			showDialog(PROGRESS_DIALOG);	
+			// Download each league in order.
+			
+			LookForLeagues();
 		} else {
 			Toast.makeText(this, R.string.noleagues,Toast.LENGTH_LONG).show();
 		}
 	}
 	
-	
-	static final int PROGRESS_DIALOG = 0;
-	ProgressThread progressThread;
-	ProgressDialog progressDialog;
-	
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case PROGRESS_DIALOG:
-			progressDialog = new ProgressDialog(DefaultActivity.this);
-			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			progressDialog.setMessage(getResources().getString(R.string.downloading));
-			return progressDialog;
-		default:
-			return null;
-		}
+	private void DownloadThisLeague() {
+		
 	}
 	
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		switch(id) {
-		case PROGRESS_DIALOG:
-			progressDialog.setProgress(0);
-			progressThread = new ProgressThread(handler);
-			progressThread.start();
-		}
-	}
-	
-	final Handler handler = new Handler() {
-		public void handleMessage(Message msg) {
-			int total = msg.arg1;
-			progressDialog.setProgress(total);
-			if (total >= 100) {
-				dismissDialog(PROGRESS_DIALOG);
-				progressThread.setState(ProgressThread.STATE_DONE);
-			}
-		}
-	};
-	
-
 	// Scans the application file directory and loads all league files it finds.
 	private void LookForLeagues() {
 		mLeagues = new HashMap<String,HashMap<String, String>>();
@@ -441,11 +425,43 @@ public class DefaultActivity extends TabActivity {
 		String mCurrentFilename = mLeagues.get(appstate.getmCurrentLeaguename()).get(appstate.getmCurrentSeason());
 		
 		appstate.setmCurrentFilename(mCurrentFilename);
-		makeTable(mSpinnerLeague.getSelectedItem().toString(), mSpinnerSeason.getSelectedItem().toString(), mCurrentFilename);
-				
+		currentround = appstate.getCurrentLeague().GetLastPlayedRound();
+		makeTable();
+		makeMatches();		
 	}
 
-	private void makeTable(String leagueName, String season, String FileName) {
+	private void makeMatches() {
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		League league = appstate.getCurrentLeague();;
+		ArrayList<Match> matchlist = league.GetMatchesForRound(currentround);
+		mRoundTextView.setText(getResources().getString(R.string.round) + " " + currentround.toString());
+		mMatchTableLayout.removeAllViews();
+		for (int i = 0; i < matchlist.size(); i++ ) {
+			Match match = matchlist.get(i);
+			View matchline = inflater.inflate(R.layout.match_row, null);
+			
+			TextView dateTextView = (TextView) matchline.findViewById(R.id.dateTextView);
+			TextView homeTeamTextView = (TextView) matchline.findViewById(R.id.homeTeamTextView);
+			TextView awayTeamTextView = (TextView) matchline.findViewById(R.id.awayTeamTextView);
+			TextView homeScoreTextView = (TextView) matchline.findViewById(R.id.homeScoreTextView);
+			TextView awayScoreTextView = (TextView) matchline.findViewById(R.id.awayScoreTextView);
+
+			dateTextView.setText(DateFormat.format("dd/MMM", match.getmDate()));
+			homeTeamTextView.setText(league.GetTeam(match.getmHomeTeamId()).getmName());
+			awayTeamTextView.setText(league.GetTeam(match.getmAwayTeamId()).getmName());
+			if (match.IsPlayed()) {
+				homeScoreTextView.setText(match.getmHomeGoals().toString());
+				awayScoreTextView.setText(match.getmAwayGoals().toString());
+			} else {
+				homeScoreTextView.setText(" ");
+				awayScoreTextView.setText(" ");
+			}
+			mMatchTableLayout.addView(matchline, i);
+		}
+		
+	}
+	
+	private void makeTable() {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		League league = appstate.getCurrentLeague();;
@@ -488,36 +504,27 @@ public class DefaultActivity extends TabActivity {
 	
 	
 	
-	private class ProgressThread extends Thread {
-		Handler mHandler;
-		final static int STATE_DONE = 0;
-		final static int STATE_RUNNING = 1;
-		int mState;
-		int total;
+	private View.OnClickListener NextRoundButtonClicked = new View.OnClickListener() {
 		
-		ProgressThread(Handler h) {
-			mHandler = h;
-		}
-		
-		public void run() {
-			mState = STATE_RUNNING;
-			total = 0;
-			// CODE FOR DOWNLOAD FILES USE TOTAL and sendMessage to update the progress bar.
-			try {
-				
-			} catch (Exception e) {
-				
+		@Override
+		public void onClick(View v) {
+			League league = appstate.getCurrentLeague();
+			if (currentround < league.getmRoundCount()) {
+				currentround++;
+				makeMatches();
 			}
-			Message msg = mHandler.obtainMessage();
-			msg.arg1 = total;
-			mHandler.sendMessage(msg);
-			total++;
+		}
+	};
+	
+	private View.OnClickListener PreviousRoundButtonClicked = new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			if (currentround > 1) {
+				currentround--;
+				makeMatches();
+			}
 			
 		}
-		
-		public void setState(int state) {
-			mState = state;
-		}
-		
-	}
+	};
 }
