@@ -25,8 +25,6 @@
 package mBovin.TeamStats.Core;
 
 import java.util.Calendar;
-import java.util.Date;
-
 import android.text.format.DateFormat;
 
 public class Match implements Comparable<Object>{
@@ -80,7 +78,7 @@ public class Match implements Comparable<Object>{
 		this.mAwayTeamId = mAwayTeamId;
 	}
 
-	public int getmHomeGoals() {
+	public Integer getmHomeGoals() {
 		return mHomeGoals;
 	}
 
@@ -88,7 +86,7 @@ public class Match implements Comparable<Object>{
 		this.mHomeGoals = mHomeGoals;
 	}
 
-	public int getmAwayGoals() {
+	public Integer getmAwayGoals() {
 		return mAwayGoals;
 	}
 

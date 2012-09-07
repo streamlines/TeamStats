@@ -35,6 +35,8 @@
     <string name="matchpage">Matches</string>
     <string name="round">Round</string>
     <string name="edit">Edit</string>
+    <string name="previous">&#0060;</string>
+    <string name="next">&#0062;</string>
     
     <string name="teampage">Teams</string>
     <string name="viewstats">Stats</string>

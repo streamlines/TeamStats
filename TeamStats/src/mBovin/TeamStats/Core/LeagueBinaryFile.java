@@ -136,7 +136,6 @@ public class LeagueBinaryFile implements ILeagueStore {
 			ds.close();
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 
@@ -195,7 +194,7 @@ public class LeagueBinaryFile implements ILeagueStore {
 			ds.read(buffer);
 			buffer = null;
 			matches = new ArrayList<Match>(league.getmMatchCount());
-			for (int i = 0; i < league.getmTeamCount(); i++) {
+			for (int i = 0; i < league.getmMatchCount(); i++) {
 				matches.add(LoadMatch(league,i,ds));
 			}
 			ds.close();
@@ -273,7 +272,7 @@ public class LeagueBinaryFile implements ILeagueStore {
 			ds.read(buffer);
 			buffer = null;
 			matches = new ArrayList<Match>(league.getmMatchCount());
-			for (int i = 0; i < league.getmTeamCount(); i++) {
+			for (int i = 0; i < league.getmMatchCount(); i++) {
 				Match match = LoadMatch(league,i,ds);
 				if (match.IsPlayed() == onlyPlayed) {
 					matches.add(match);
@@ -289,16 +288,54 @@ public class LeagueBinaryFile implements ILeagueStore {
 	@Override
 	public ArrayList<Match> LoadMatches(League league, MatchFilterRound filter,
 			int round) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Match> matches = null;
+		File file = new File(mFilename); 
+		DataInputStream ds = null;
+		try {
+			ds = new DataInputStream(new FileInputStream(file));
+			// Skip the header
+			byte[] buffer= new byte[cHeaderSize + (league.getmTeamCount() * cTeamSize)];
+			ds.read(buffer);
+			buffer = null;
+			matches = new ArrayList<Match>(league.getmMatchCount());
+			for (int i = 0; i < league.getmMatchCount(); i++) {
+				Match match = LoadMatch(league,i,ds);
+				if (match.getmRound() == round) {
+					matches.add(match);
+				}
+			}
+			ds.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return matches;
 	}
 
 	@Override
 	public ArrayList<Match> LoadMatches(League league,
 			MatchFilterTeam matchFilterTeam, int teamIndex,
 			boolean includeHome, boolean includeAway) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Match> matches = null;
+		File file = new File(mFilename); 
+		DataInputStream ds = null;
+		try {
+			ds = new DataInputStream(new FileInputStream(file));
+			// Skip the header
+			byte[] buffer= new byte[cHeaderSize + (league.getmTeamCount() * cTeamSize)];
+			ds.read(buffer);
+			buffer = null;
+			matches = new ArrayList<Match>(league.getmMatchCount());
+			for (int i = 0; i < league.getmMatchCount(); i++) {
+				Match match = LoadMatch(league,i,ds);
+				if ((includeHome && match.getmHomeTeamId() == teamIndex) || (includeAway && match.getmAwayTeamId() == teamIndex)) {
+					matches.add(match);
+				}
+			}
+			ds.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return matches;
 	}
 
 }
