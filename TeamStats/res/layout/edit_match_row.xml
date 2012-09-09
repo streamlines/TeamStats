@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <EditText
+        android:id="@+id/dateEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/homeTeamTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/awayTeamTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <EditText
+        android:id="@+id/homeScoreEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:digits="1"
+        android:ems="10"
+        android:inputType="number"
+        android:singleLine="true" >
+
+    </EditText>
+
+    <EditText
+        android:id="@+id/awayScoreEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:digits="1"
+        android:ems="10"
+        android:inputType="number"
+        android:singleLine="true" />
+
+</TableRow>

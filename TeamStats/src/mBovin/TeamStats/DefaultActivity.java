@@ -62,12 +62,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import mBovin.TeamStats.R;
 
@@ -89,6 +93,7 @@ public class DefaultActivity extends TabActivity {
 	private ArrayList<String> SeasonNames= new ArrayList<String>();
 	private SharedPreferences savedData;
 	private Integer currentround;
+	private boolean mEditMode;
 	
 	private UIMode mode;
 
@@ -116,6 +121,9 @@ public class DefaultActivity extends TabActivity {
 		mRoundTextView = (TextView) findViewById(R.id.RoundTextView);
 		mNextRoundButton = (Button) findViewById(R.id.buttonNextRound);
 		mPreviousRoundButton = (Button) findViewById(R.id.buttonPreviousRound);
+		ToggleButton editButton = (ToggleButton) findViewById(R.id.toggleButtonEditResults);
+		editButton.setOnCheckedChangeListener(editMatchesToggleButtonListener);
+		mEditMode = false;
 		
 		mNextRoundButton.setOnClickListener(NextRoundButtonClicked);
 		mPreviousRoundButton.setOnClickListener(PreviousRoundButtonClicked);
@@ -438,25 +446,47 @@ public class DefaultActivity extends TabActivity {
 		mMatchTableLayout.removeAllViews();
 		for (int i = 0; i < matchlist.size(); i++ ) {
 			Match match = matchlist.get(i);
-			View matchline = inflater.inflate(R.layout.match_row, null);
-			
-			TextView dateTextView = (TextView) matchline.findViewById(R.id.dateTextView);
-			TextView homeTeamTextView = (TextView) matchline.findViewById(R.id.homeTeamTextView);
-			TextView awayTeamTextView = (TextView) matchline.findViewById(R.id.awayTeamTextView);
-			TextView homeScoreTextView = (TextView) matchline.findViewById(R.id.homeScoreTextView);
-			TextView awayScoreTextView = (TextView) matchline.findViewById(R.id.awayScoreTextView);
+			if (!mEditMode) {
+				View matchline = inflater.inflate(R.layout.match_row, null);
+				TextView dateTextView = (TextView) matchline.findViewById(R.id.dateTextView);
+				TextView homeTeamTextView = (TextView) matchline.findViewById(R.id.homeTeamTextView);
+				TextView awayTeamTextView = (TextView) matchline.findViewById(R.id.awayTeamTextView);
+				TextView homeScoreTextView = (TextView) matchline.findViewById(R.id.homeScoreTextView);
+				TextView awayScoreTextView = (TextView) matchline.findViewById(R.id.awayScoreTextView);
 
-			dateTextView.setText(DateFormat.format("dd/MMM", match.getmDate()));
-			homeTeamTextView.setText(league.GetTeam(match.getmHomeTeamId()).getmName());
-			awayTeamTextView.setText(league.GetTeam(match.getmAwayTeamId()).getmName());
-			if (match.IsPlayed()) {
-				homeScoreTextView.setText(match.getmHomeGoals().toString());
-				awayScoreTextView.setText(match.getmAwayGoals().toString());
+				dateTextView.setText(DateFormat.format("dd/MMM", match.getmDate()));
+				homeTeamTextView.setText(league.GetTeam(match.getmHomeTeamId()).getmName());
+				awayTeamTextView.setText(league.GetTeam(match.getmAwayTeamId()).getmName());
+				if (match.IsPlayed()) {
+					homeScoreTextView.setText(match.getmHomeGoals().toString());
+					awayScoreTextView.setText(match.getmAwayGoals().toString());
+				} else {
+					homeScoreTextView.setText(" ");
+					awayScoreTextView.setText(" ");
+				}
+				mMatchTableLayout.addView(matchline, i);
 			} else {
-				homeScoreTextView.setText(" ");
-				awayScoreTextView.setText(" ");
+				View matchline = inflater.inflate(R.layout.edit_match_row, null);
+				EditText dateEditText = (EditText) matchline.findViewById(R.id.dateEditText);
+				TextView homeTeamTextView = (TextView) matchline.findViewById(R.id.homeTeamTextView);
+				TextView awayTeamTextView = (TextView) matchline.findViewById(R.id.awayTeamTextView);
+				EditText homeScoreEditText = (EditText) matchline.findViewById(R.id.homeScoreEditText);
+				EditText awayScoreEditText = (EditText) matchline.findViewById(R.id.awayScoreEditText);
+
+				dateEditText.setText(DateFormat.format("dd/MMM", match.getmDate()));
+				homeTeamTextView.setText(league.GetTeam(match.getmHomeTeamId()).getmName());
+				awayTeamTextView.setText(league.GetTeam(match.getmAwayTeamId()).getmName());
+				if (match.IsPlayed()) {
+					homeScoreEditText.setText(match.getmHomeGoals().toString());
+					awayScoreEditText.setText(match.getmAwayGoals().toString());
+				} else {
+					homeScoreEditText.setText(" ");
+					awayScoreEditText.setText(" ");
+				}
+				mMatchTableLayout.addView(matchline, i);
+
 			}
-			mMatchTableLayout.addView(matchline, i);
+
 		}
 		
 	}
@@ -527,4 +557,30 @@ public class DefaultActivity extends TabActivity {
 			
 		}
 	};
+	
+	private OnCheckedChangeListener editMatchesToggleButtonListener = new OnCheckedChangeListener() {
+
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+			// TODO Auto-generated method stub
+			if (!isChecked) {
+				// Save off any changes
+				saveMatches();
+				mEditMode = false;
+				makeMatches();
+			} else {
+				// Go into edit Mode.
+				mEditMode = true;
+				makeMatches();
+			}
+			
+		}
+		
+	};
+
+	protected void saveMatches() {
+		// TODO Code to save off the matches.
+		
+	}
 }
