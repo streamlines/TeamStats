@@ -37,7 +37,7 @@ public class Result implements Comparable<Object> {
 	}
 	
 
-	public int getmCount() {
+	public Integer getmCount() {
 		return mCount;
 	}
 
@@ -79,5 +79,13 @@ public class Result implements Comparable<Object> {
 			}
 		}
 	}
+
+
+	@Override
+	public String toString() {
+		return  mHomeGoals + "-" + mAwayGoals;
+	}
+	
+	
 
 }

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="0" >
+
+    <TableRow
+        android:id="@+id/tableRow0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView1"
+            style="@style/StatsLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/matchesplayed" />
+
+        <TextView
+            android:id="@+id/matchesPlayedTextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView2"
+            style="@style/StatsLabelTextView"
+            android:text="@string/homewins" />
+
+        <TextView
+            android:id="@+id/homeWinsTextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/homeWinsPercTextView"
+            style="@style/StatsPercentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/TableRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView01"
+            style="@style/StatsLabelTextView"
+            android:text="@string/draws" />
+
+        <TextView
+            android:id="@+id/drawsTextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/drawsPercTextView"
+            style="@style/StatsPercentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/TableRow3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView04"
+            style="@style/StatsLabelTextView"
+            android:text="@string/awaywins" />
+
+        <TextView
+            android:id="@+id/awayWinsTextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/awayWinsPercTextView"
+            style="@style/StatsPercentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView07"
+            style="@style/StatsLabelTextView"
+            android:text="@string/goals" />
+
+        <TextView
+            android:id="@+id/goalsTextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/goalsPercTextView"
+            style="@style/StatsPercentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView08"
+            style="@style/StatsLabelTextView"
+            android:text="@string/homegoals" />
+
+        <TextView
+            android:id="@+id/homeGoalsTextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/homeGoalsPercTextView"
+            style="@style/StatsPercentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView09"
+            style="@style/StatsLabelTextView"
+            android:text="@string/awaygoals" />
+
+        <TextView
+            android:id="@+id/awayGoalsTextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/awayGoalsPercTextView"
+            style="@style/StatsPercentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView10"
+            style="@style/StatsLabelTextView"
+            android:text="@string/frequentresult" />
+
+        <TextView
+            android:id="@+id/FrequentScore1TextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Frequency1TextView"
+            style="@style/StatsFrequencyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="xx Times" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/FrequentScore2TextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Frequency2TextView"
+            style="@style/StatsFrequencyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="xx Times" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/FrequentScore3TextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Frequency3TextView"
+            style="@style/StatsFrequencyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="xx Times" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/FrequentScore4TextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Frequency4TextView"
+            style="@style/StatsFrequencyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="xx Times" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/FrequentScore5TextView"
+            style="@style/StatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Frequency5TextView"
+            style="@style/StatsFrequencyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="xx Times" />
+
+    </TableRow>
+
+</TableLayout>
