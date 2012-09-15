@@ -82,6 +82,7 @@ import mBovin.TeamStats.R;
 
 @SuppressWarnings("deprecation")
 public class DefaultActivity extends TabActivity {
+	public static final String cLiveUpdateVersion = "ANDROID1.0";
 	
 	private TabHost mTabHost;
 	private Spinner mSpinnerLeague;

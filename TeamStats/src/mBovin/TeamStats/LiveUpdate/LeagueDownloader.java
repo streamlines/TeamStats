@@ -18,11 +18,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import mBovin.TeamStats.DefaultActivity;
 import mBovin.TeamStats.Core.League;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.provider.Settings.Secure;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -99,7 +102,7 @@ public class LeagueDownloader extends AsyncTask<Object, Object, String> {
 	}
 	
 	private String downloadLeaguefile(String urlString) throws IOException, URISyntaxException {
-		URI uri = new URI(null, urlString, null);
+		URI uri = new URI(null, urlString, getQueryString());
 		HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
 		connection.setRequestMethod("GET");
 		connection.setDoOutput(false);
@@ -155,6 +158,12 @@ public class LeagueDownloader extends AsyncTask<Object, Object, String> {
 		}
 	}
 	
+	private String getQueryString() {
+		String android_id = Secure.ANDROID_ID;
+		String buildVersion = Build.VERSION.RELEASE;
+		String queryString = "&tsVersion=" + DefaultActivity.cLiveUpdateVersion + "&deviceId=" + android_id + "&osVersion=" + buildVersion;
+		return queryString;
+	}
 	
 	
 }
