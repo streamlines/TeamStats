@@ -159,7 +159,7 @@ public class LeagueDownloader extends AsyncTask<Object, Object, String> {
 	}
 	
 	private String getQueryString() {
-		String android_id = Secure.ANDROID_ID;
+		String android_id = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);;
 		String buildVersion = Build.VERSION.RELEASE;
 		String queryString = "&tsVersion=" + DefaultActivity.cLiveUpdateVersion + "&deviceId=" + android_id + "&osVersion=" + buildVersion;
 		return queryString;
