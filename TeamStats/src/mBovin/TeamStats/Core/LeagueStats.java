@@ -43,55 +43,55 @@ public class LeagueStats {
 		Build();
 	}
 
-	public int Played() {
+	public Integer Played() {
 		return mHomeWins + mDraws + mAwayWins;
 	}
 	
-	public int HomeWins() {
+	public Integer HomeWins() {
 		return mHomeWins;
 	}
 	
-	public float HomeWinPercent() {
+	public Float HomeWinPercent() {
 		return (this.Played() > 0) ? ((float)mHomeWins / (float)this.Played()) : 0;
 	}
 	
-	public int Draws() {
+	public Integer Draws() {
 		return mDraws;
 	}
 	
-	public float DrawPercent() {
+	public Float DrawPercent() {
 		return (this.Played() > 0) ? ((float)mDraws / (float)this.Played()) : 0;
 	}
 	
-	public int AwayWins() {
+	public Integer AwayWins() {
 		return mAwayWins;
 	}
 	
-	public float AwayWinPercent() {
+	public Float AwayWinPercent() {
 		return (this.Played() > 0) ? ((float)mAwayWins / (float)this.Played()) : 0;
 	}
 
-	public int Goals() {
+	public Integer Goals() {
 		return mHomeGoals + mAwayGoals;
 	}
 	
-	public float GoalAvg() {
+	public Float GoalAvg() {
 		return (this.Played() > 0) ? ((float)this.Goals() / (float)this.Played()) : 0;
 	}
 
-	public int HomeGoals() {
+	public Integer HomeGoals() {
 		return mHomeGoals;
 	}
 	
-	public float HomeGoalAvg() {
+	public Float HomeGoalAvg() {
 		return (this.Played() > 0) ? ((float)mHomeGoals / (float)this.Played()) : 0;
 	}
 	
-	public int AwayGoals() {
+	public Integer AwayGoals() {
 		return mAwayGoals;
 	}
 	
-	public float AwayGoalAvg() {
+	public Float AwayGoalAvg() {
 		return (this.Played() > 0) ? ((float)mAwayGoals / (float)this.Played()) : 0;
 	}
 	

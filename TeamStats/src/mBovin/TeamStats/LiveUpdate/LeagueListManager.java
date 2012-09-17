@@ -22,35 +22,66 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 public class LeagueListManager {
+	private static final String TAG = "LeagueListManager.java";
+	
 	private static final String cActiveListURL = "http://www.aragon.ws/soccerdb/export/liveupdateleagues.php";
 	private static final String cArchivelistURL = "http://www.aragon.ws/soccerdb/export/completegrouplist.php";
 	public static final String cActiveListFilename = "activeleagues.xml";
 	public static final String cArchiveListFilename = "archiveleagues.xml";
 	private static final String cLastSyncActiveListFilename = "lastsyncactiveleagues.xml";
+	private LeagueListDatabaseConnector mLeagueListDatabaseConnector; 
 	
 	private List<DownloadableLeague> mAddedLeagueList;
 	
-	public LeagueListManager() {
-		
+	public LeagueListManager(LeagueListDatabaseConnector db) {
+		mLeagueListDatabaseConnector = db;
 	}
 	
 	public List<DownloadableLeague> getmAddedLeagueList() {
 		return mAddedLeagueList;
 	}
 	
+	public interface newLeagueListener {
+		public void onLeagueListUpdated(List<DownloadableLeague> newleagues);		
+	}
+	
+	public class CheckForNewLeagues extends AsyncTask<Object, Object, Object> {
+		private newLeagueListener leagueListener;
+		
+		CheckForNewLeagues(newLeagueListener listener) {
+			leagueListener = listener;
+		}
+
+		@Override
+		protected Object doInBackground(Object... arg0) {
+			checkForNewLeagues();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Object result) {
+			super.onPostExecute(result);
+			leagueListener.onLeagueListUpdated(mAddedLeagueList);
+		}
+	}
+	
 	private void checkForNewLeagues() {
 		String filename = cLastSyncActiveListFilename;
 		
-		List<DownloadableLeague> localLeagueList = ParseActiveXML(GetLocalXML(filename));
+		List<DownloadableLeague> localLeagueList = mLeagueListDatabaseConnector.getCurrent();
 		List<DownloadableLeague> removeLeagueList = ParseActiveXML(GetRemoteXML(cActiveListURL, filename ));
 		
 		mAddedLeagueList = CreateAddedLeagueList(localLeagueList, removeLeagueList);
 		
 		if (mAddedLeagueList.size() > 0) {
 			// Log 
+			for (DownloadableLeague league : mAddedLeagueList) {
+				mLeagueListDatabaseConnector.addLeague(league);
+			}
 		}
 		
 	}
@@ -79,7 +110,7 @@ public class LeagueListManager {
 			Document doc = builder.parse(fileIS);
 			return doc;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(TAG, e.toString());
 			return null;
 		}
 	}
@@ -111,7 +142,7 @@ public class LeagueListManager {
 			}
 			
 		} catch (Exception e) {
-			Log.e("XML READ", "PARSING FAILED");
+			Log.e(TAG, "PARSING FAILED - " + e.toString());
 		}
 		return leagueList;
 	}
@@ -129,7 +160,7 @@ public class LeagueListManager {
 				DOMSource source = new DOMSource(xmlDoc);
 				trans.transform(source, result);
 			} catch (Exception e) {
-				Log.e("", "We had a problem");
+				Log.e(TAG, e.toString());
 			}
 		}
 		return xmlDoc;

@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -36,6 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mBovin.TeamStats.Core.*;
+import mBovin.TeamStats.LiveUpdate.LeagueDownloader;
+import mBovin.TeamStats.LiveUpdate.LeagueDownloader.LeagueDownloadListener;
 import mBovin.TeamStats.Utils.utils;
 
 import android.app.Activity;
@@ -54,6 +57,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,17 +66,23 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import mBovin.TeamStats.R;
 
 @SuppressWarnings("deprecation")
 public class DefaultActivity extends TabActivity {
+	public static final String cLiveUpdateVersion = "ANDROID1.0";
 	
 	private TabHost mTabHost;
 	private Spinner mSpinnerLeague;
@@ -89,6 +99,7 @@ public class DefaultActivity extends TabActivity {
 	private ArrayList<String> SeasonNames= new ArrayList<String>();
 	private SharedPreferences savedData;
 	private Integer currentround;
+	private boolean mEditMode;
 	
 	private UIMode mode;
 
@@ -116,6 +127,9 @@ public class DefaultActivity extends TabActivity {
 		mRoundTextView = (TextView) findViewById(R.id.RoundTextView);
 		mNextRoundButton = (Button) findViewById(R.id.buttonNextRound);
 		mPreviousRoundButton = (Button) findViewById(R.id.buttonPreviousRound);
+		ToggleButton editButton = (ToggleButton) findViewById(R.id.toggleButtonEditResults);
+		editButton.setOnCheckedChangeListener(editMatchesToggleButtonListener);
+		mEditMode = false;
 		
 		mNextRoundButton.setOnClickListener(NextRoundButtonClicked);
 		mPreviousRoundButton.setOnClickListener(PreviousRoundButtonClicked);
@@ -272,8 +286,25 @@ public class DefaultActivity extends TabActivity {
 	}
 	
 	private void DownloadThisLeague() {
-		
+		LeagueDownloader download = new LeagueDownloader(appstate.getCurrentLeague(), DefaultActivity.this, SingleLeaguedownload );
+		download.execute();
 	}
+	
+	LeagueDownloadListener SingleLeaguedownload = new LeagueDownloadListener() {
+
+		@Override
+		public void onLeagueDownloaded(String league) {
+			if (league != null) {
+				ShowLeague();
+			} else {
+				Toast errorToast = Toast.makeText(getBaseContext(), getString(mBovin.TeamStats.R.string.noconnection2), Toast.LENGTH_LONG);
+				errorToast.setGravity(Gravity.CENTER, 0, 0);
+				errorToast.show();
+			}
+		}
+		
+	};
+	
 	
 	// Scans the application file directory and loads all league files it finds.
 	private void LookForLeagues() {
@@ -427,7 +458,70 @@ public class DefaultActivity extends TabActivity {
 		appstate.setmCurrentFilename(mCurrentFilename);
 		currentround = appstate.getCurrentLeague().GetLastPlayedRound();
 		makeTable();
-		makeMatches();		
+		makeMatches();	
+		makeLeagueStats();
+	}
+	
+	private void makeLeagueStats() {
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		League league = appstate.getCurrentLeague();
+		LeagueStats stats = new LeagueStats(league);
+		TableLayout leaguestats = (TableLayout) inflater.inflate(R.layout.league_stats, null);
+		TextView matchesPlayed = (TextView) leaguestats.findViewById(R.id.matchesPlayedTextView);
+		matchesPlayed.setText(stats.Played().toString());
+		TextView homeWins = (TextView) leaguestats.findViewById(R.id.homeWinsTextView);
+		homeWins.setText(stats.HomeWins().toString());
+		TextView homeWinPercentage = (TextView) leaguestats.findViewById(R.id.homeWinsPercTextView);
+		homeWinPercentage.setText(((CharSequence) new DecimalFormat("#.##").format(stats.HomeWinPercent() * 100)) + "%");
+		TextView draws = (TextView) leaguestats.findViewById(R.id.drawsTextView);
+		draws.setText(stats.Draws().toString());
+		TextView drawsPercentage = (TextView) leaguestats.findViewById(R.id.drawsPercTextView);
+		drawsPercentage.setText(((CharSequence) new DecimalFormat("#.##").format(stats.DrawPercent() * 100)) + "%");
+		TextView awayWins = (TextView) leaguestats.findViewById(R.id.awayWinsTextView);
+		awayWins.setText(stats.AwayWins().toString());
+		TextView awayWinsPercentage = (TextView) leaguestats.findViewById(R.id.awayWinsPercTextView);
+		awayWinsPercentage.setText(((CharSequence) new DecimalFormat("#.##").format(stats.AwayWinPercent() * 100)) + "%");
+		TextView goalsScored = (TextView) leaguestats.findViewById(R.id.goalsTextView);
+		goalsScored.setText(stats.Goals().toString());
+		TextView goalsAverage = (TextView) leaguestats.findViewById(R.id.goalsPercTextView);
+		goalsAverage.setText((CharSequence) new DecimalFormat("#.##").format(stats.GoalAvg()));
+		TextView goalsHome = (TextView) leaguestats.findViewById(R.id.homeGoalsTextView);
+		goalsHome.setText(stats.HomeGoals().toString());
+		TextView goalsHomeAvg = (TextView) leaguestats.findViewById(R.id.homeGoalsPercTextView);
+		goalsHomeAvg.setText((CharSequence) new DecimalFormat("#.##").format(stats.HomeGoalAvg()));
+		TextView goalsAway = (TextView) leaguestats.findViewById(R.id.awayGoalsTextView);
+		goalsAway.setText(stats.AwayGoals().toString());
+		TextView goalsAwayAvg = (TextView) leaguestats.findViewById(R.id.awayGoalsPercTextView);
+		goalsAwayAvg.setText((CharSequence) new DecimalFormat("#.##").format(stats.AwayGoalAvg()));
+		
+		TextView FrequentResult1 = (TextView) leaguestats.findViewById(R.id.FrequentScore1TextView);
+		FrequentResult1.setText(stats.GetFrequentResult(0).toString());
+		TextView Frequent1 = (TextView) leaguestats.findViewById(R.id.Frequency1TextView);
+		Frequent1.setText(stats.GetFrequentResult(0).getmCount().toString() + " " + getResources().getString(R.string.times));
+		
+		TextView FrequentResult2 = (TextView) leaguestats.findViewById(R.id.FrequentScore2TextView);
+		FrequentResult2.setText(stats.GetFrequentResult(1).toString());
+		TextView Frequent2 = (TextView) leaguestats.findViewById(R.id.Frequency2TextView);
+		Frequent2.setText(stats.GetFrequentResult(1).getmCount().toString() + " " + getResources().getString(R.string.times));
+
+		TextView FrequentResult3 = (TextView) leaguestats.findViewById(R.id.FrequentScore3TextView);
+		FrequentResult3.setText(stats.GetFrequentResult(2).toString());
+		TextView Frequent3 = (TextView) leaguestats.findViewById(R.id.Frequency3TextView);
+		Frequent3.setText(stats.GetFrequentResult(2).getmCount().toString() + " " + getResources().getString(R.string.times));
+
+		TextView FrequentResult4 = (TextView) leaguestats.findViewById(R.id.FrequentScore4TextView);
+		FrequentResult4.setText(stats.GetFrequentResult(3).toString());
+		TextView Frequent4 = (TextView) leaguestats.findViewById(R.id.Frequency4TextView);
+		Frequent4.setText(stats.GetFrequentResult(3).getmCount().toString() + " " + getResources().getString(R.string.times));
+
+		TextView FrequentResult5 = (TextView) leaguestats.findViewById(R.id.FrequentScore5TextView);
+		FrequentResult5.setText(stats.GetFrequentResult(4).toString());
+		TextView Frequent5 = (TextView) leaguestats.findViewById(R.id.Frequency5TextView);
+		Frequent5.setText(stats.GetFrequentResult(4).getmCount().toString() + " " + getResources().getString(R.string.times));
+		
+		LinearLayout tabLeague = (LinearLayout) findViewById(R.id.tableague);
+		tabLeague.removeAllViews();
+		tabLeague.addView(leaguestats);
 	}
 
 	private void makeMatches() {
@@ -438,25 +532,47 @@ public class DefaultActivity extends TabActivity {
 		mMatchTableLayout.removeAllViews();
 		for (int i = 0; i < matchlist.size(); i++ ) {
 			Match match = matchlist.get(i);
-			View matchline = inflater.inflate(R.layout.match_row, null);
-			
-			TextView dateTextView = (TextView) matchline.findViewById(R.id.dateTextView);
-			TextView homeTeamTextView = (TextView) matchline.findViewById(R.id.homeTeamTextView);
-			TextView awayTeamTextView = (TextView) matchline.findViewById(R.id.awayTeamTextView);
-			TextView homeScoreTextView = (TextView) matchline.findViewById(R.id.homeScoreTextView);
-			TextView awayScoreTextView = (TextView) matchline.findViewById(R.id.awayScoreTextView);
+			if (!mEditMode) {
+				View matchline = inflater.inflate(R.layout.match_row, null);
+				TextView dateTextView = (TextView) matchline.findViewById(R.id.dateTextView);
+				TextView homeTeamTextView = (TextView) matchline.findViewById(R.id.homeTeamTextView);
+				TextView awayTeamTextView = (TextView) matchline.findViewById(R.id.awayTeamTextView);
+				TextView homeScoreTextView = (TextView) matchline.findViewById(R.id.homeScoreTextView);
+				TextView awayScoreTextView = (TextView) matchline.findViewById(R.id.awayScoreTextView);
 
-			dateTextView.setText(DateFormat.format("dd/MMM", match.getmDate()));
-			homeTeamTextView.setText(league.GetTeam(match.getmHomeTeamId()).getmName());
-			awayTeamTextView.setText(league.GetTeam(match.getmAwayTeamId()).getmName());
-			if (match.IsPlayed()) {
-				homeScoreTextView.setText(match.getmHomeGoals().toString());
-				awayScoreTextView.setText(match.getmAwayGoals().toString());
+				dateTextView.setText(DateFormat.format("dd/MMM", match.getmDate()));
+				homeTeamTextView.setText(league.GetTeam(match.getmHomeTeamId()).getmName());
+				awayTeamTextView.setText(league.GetTeam(match.getmAwayTeamId()).getmName());
+				if (match.IsPlayed()) {
+					homeScoreTextView.setText(match.getmHomeGoals().toString());
+					awayScoreTextView.setText(match.getmAwayGoals().toString());
+				} else {
+					homeScoreTextView.setText(" ");
+					awayScoreTextView.setText(" ");
+				}
+				mMatchTableLayout.addView(matchline, i);
 			} else {
-				homeScoreTextView.setText(" ");
-				awayScoreTextView.setText(" ");
+				View matchline = inflater.inflate(R.layout.edit_match_row, null);
+				EditText dateEditText = (EditText) matchline.findViewById(R.id.dateEditText);
+				TextView homeTeamTextView = (TextView) matchline.findViewById(R.id.homeTeamTextView);
+				TextView awayTeamTextView = (TextView) matchline.findViewById(R.id.awayTeamTextView);
+				EditText homeScoreEditText = (EditText) matchline.findViewById(R.id.homeScoreEditText);
+				EditText awayScoreEditText = (EditText) matchline.findViewById(R.id.awayScoreEditText);
+
+				dateEditText.setText(DateFormat.format("dd/MMM", match.getmDate()));
+				homeTeamTextView.setText(league.GetTeam(match.getmHomeTeamId()).getmName());
+				awayTeamTextView.setText(league.GetTeam(match.getmAwayTeamId()).getmName());
+				if (match.IsPlayed()) {
+					homeScoreEditText.setText(match.getmHomeGoals().toString());
+					awayScoreEditText.setText(match.getmAwayGoals().toString());
+				} else {
+					homeScoreEditText.setText(" ");
+					awayScoreEditText.setText(" ");
+				}
+				mMatchTableLayout.addView(matchline, i);
+
 			}
-			mMatchTableLayout.addView(matchline, i);
+
 		}
 		
 	}
@@ -467,7 +583,7 @@ public class DefaultActivity extends TabActivity {
 		League league = appstate.getCurrentLeague();;
 		// Add additional functionality
 		Table table = new Table(league, true, true, true, -1);
-		
+		mTableTableLayout.removeAllViews();
 		View row = inflater.inflate(R.layout.new_table_row, null);
 		mTableTableLayout.addView(row, 0);
 		
@@ -527,4 +643,30 @@ public class DefaultActivity extends TabActivity {
 			
 		}
 	};
+	
+	private OnCheckedChangeListener editMatchesToggleButtonListener = new OnCheckedChangeListener() {
+
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+			// TODO Auto-generated method stub
+			if (!isChecked) {
+				// Save off any changes
+				saveMatches();
+				mEditMode = false;
+				makeMatches();
+			} else {
+				// Go into edit Mode.
+				mEditMode = true;
+				makeMatches();
+			}
+			
+		}
+		
+	};
+
+	protected void saveMatches() {
+		// TODO Code to save off the matches.
+		
+	}
 }
