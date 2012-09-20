@@ -101,7 +101,6 @@ public class DefaultActivity extends TabActivity {
 	private ArrayList<String> SeasonNames= new ArrayList<String>();
 	private SharedPreferences savedData;
 	private Integer currentround;
-	private boolean mEditMode;
 	private LeagueListDatabaseConnector dbConnector;
 	
 	private UIMode mode;
@@ -131,9 +130,6 @@ public class DefaultActivity extends TabActivity {
 		mRoundTextView = (TextView) findViewById(R.id.RoundTextView);
 		mNextRoundButton = (Button) findViewById(R.id.buttonNextRound);
 		mPreviousRoundButton = (Button) findViewById(R.id.buttonPreviousRound);
-		ToggleButton editButton = (ToggleButton) findViewById(R.id.toggleButtonEditResults);
-		editButton.setOnCheckedChangeListener(editMatchesToggleButtonListener);
-		mEditMode = false;
 		
 		mNextRoundButton.setOnClickListener(NextRoundButtonClicked);
 		mPreviousRoundButton.setOnClickListener(PreviousRoundButtonClicked);
@@ -223,8 +219,6 @@ public class DefaultActivity extends TabActivity {
 
 
 	private void SetUIMode(UIMode mode) {
-		// TODO Auto-generated method stub
-		
 		if (mode == UIMode.Normal) {
 			// Create the normal mode
 			mSpinnerLeague.setEnabled(true);
@@ -283,7 +277,7 @@ public class DefaultActivity extends TabActivity {
 		if (dbConnector.getSelectedCount() > 0) {
 			// Download each league in order.
 			LeagueDownloader download = new LeagueDownloader(dbConnector.getSelected(), DefaultActivity.this, MultiLeaguedownload);
-			
+			//TODO Add Progress Dialog
 			download.execute();
 		} else {
 			Toast.makeText(this, R.string.noleagues,Toast.LENGTH_LONG).show();
@@ -425,13 +419,11 @@ public class DefaultActivity extends TabActivity {
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			// TODO Auto-generated method stub
 			FillSeasonSpinner();
 		}
 
 		@Override
 		public void onNothingSelected(AdapterView<?> arg0) {
-			// TODO Auto-generated method stub
 			mSpinnerSeason.setAdapter(null);
 		}
 		
@@ -459,19 +451,15 @@ public class DefaultActivity extends TabActivity {
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			// TODO Auto-generated method stub
 			ShowLeague();
 		}
 
 		@Override
 		public void onNothingSelected(AdapterView<?> arg0) {
-			// TODO Auto-generated method stub
-			
 		}
 	};
 
 	protected void ShowLeague() {
-		// TODO Auto-generated method stub
 		appstate.setmCurrentLeaguename(mSpinnerLeague.getSelectedItem().toString());
 		appstate.setmCurrentSeason(mSpinnerSeason.getSelectedItem().toString());
 		String mCurrentFilename = mLeagues.get(appstate.getmCurrentLeaguename()).get(appstate.getmCurrentSeason());
@@ -547,55 +535,45 @@ public class DefaultActivity extends TabActivity {
 
 	private void makeMatches() {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		League league = appstate.getCurrentLeague();;
+		League league = appstate.getCurrentLeague();
+		
 		ArrayList<Match> matchlist = league.GetMatchesForRound(currentround);
-		mRoundTextView.setText(getResources().getString(R.string.round) + " " + currentround.toString());
+		mRoundTextView.setText(getResources().getString(R.string.round) + " "
+				+ currentround.toString());
 		mMatchTableLayout.removeAllViews();
-		for (int i = 0; i < matchlist.size(); i++ ) {
+		for (int i = 0; i < matchlist.size(); i++) {
 			Match match = matchlist.get(i);
-			if (!mEditMode) {
-				View matchline = inflater.inflate(R.layout.match_row, null);
-				TextView dateTextView = (TextView) matchline.findViewById(R.id.dateTextView);
-				TextView homeTeamTextView = (TextView) matchline.findViewById(R.id.homeTeamTextView);
-				TextView awayTeamTextView = (TextView) matchline.findViewById(R.id.awayTeamTextView);
-				TextView homeScoreTextView = (TextView) matchline.findViewById(R.id.homeScoreTextView);
-				TextView awayScoreTextView = (TextView) matchline.findViewById(R.id.awayScoreTextView);
-
-				dateTextView.setText(DateFormat.format("dd/MMM", match.getmDate()));
-				homeTeamTextView.setText(league.GetTeam(match.getmHomeTeamId()).getmName());
-				awayTeamTextView.setText(league.GetTeam(match.getmAwayTeamId()).getmName());
-				if (match.IsPlayed()) {
-					homeScoreTextView.setText(match.getmHomeGoals().toString());
-					awayScoreTextView.setText(match.getmAwayGoals().toString());
-				} else {
-					homeScoreTextView.setText(" ");
-					awayScoreTextView.setText(" ");
-				}
-				mMatchTableLayout.addView(matchline, i);
+			View matchline = inflater.inflate(R.layout.match_row, null);
+			TextView dateTextView = (TextView) matchline
+					.findViewById(R.id.dateTextView);
+			TextView homeTeamTextView = (TextView) matchline
+					.findViewById(R.id.homeTeamTextView);
+			TextView awayTeamTextView = (TextView) matchline
+					.findViewById(R.id.awayTeamTextView);
+			TextView homeScoreTextView = (TextView) matchline
+					.findViewById(R.id.homeScoreTextView);
+			TextView awayScoreTextView = (TextView) matchline
+					.findViewById(R.id.awayScoreTextView);
+			Button editButton = (Button) matchline.findViewById(R.id.editButton);
+			editButton.setTag(match);
+			editButton.setOnClickListener(editMatchButtonClicked);
+			
+			dateTextView.setText(DateFormat.format("dd/MMM", match.getmDate()));
+			homeTeamTextView.setText(league.GetTeam(match.getmHomeTeamId())
+					.getmName());
+			awayTeamTextView.setText(league.GetTeam(match.getmAwayTeamId())
+					.getmName());
+			if (match.IsPlayed()) {
+				homeScoreTextView.setText(match.getmHomeGoals().toString());
+				awayScoreTextView.setText(match.getmAwayGoals().toString());
 			} else {
-				View matchline = inflater.inflate(R.layout.edit_match_row, null);
-				EditText dateEditText = (EditText) matchline.findViewById(R.id.dateEditText);
-				TextView homeTeamTextView = (TextView) matchline.findViewById(R.id.homeTeamTextView);
-				TextView awayTeamTextView = (TextView) matchline.findViewById(R.id.awayTeamTextView);
-				EditText homeScoreEditText = (EditText) matchline.findViewById(R.id.homeScoreEditText);
-				EditText awayScoreEditText = (EditText) matchline.findViewById(R.id.awayScoreEditText);
-
-				dateEditText.setText(DateFormat.format("dd/MMM", match.getmDate()));
-				homeTeamTextView.setText(league.GetTeam(match.getmHomeTeamId()).getmName());
-				awayTeamTextView.setText(league.GetTeam(match.getmAwayTeamId()).getmName());
-				if (match.IsPlayed()) {
-					homeScoreEditText.setText(match.getmHomeGoals().toString());
-					awayScoreEditText.setText(match.getmAwayGoals().toString());
-				} else {
-					homeScoreEditText.setText(" ");
-					awayScoreEditText.setText(" ");
-				}
-				mMatchTableLayout.addView(matchline, i);
-
+				homeScoreTextView.setText(" ");
+				awayScoreTextView.setText(" ");
 			}
+			mMatchTableLayout.addView(matchline, i);
 
 		}
-		
+
 	}
 	
 	private void makeTable() {
@@ -665,25 +643,47 @@ public class DefaultActivity extends TabActivity {
 		}
 	};
 	
-	private OnCheckedChangeListener editMatchesToggleButtonListener = new OnCheckedChangeListener() {
-
-		@Override
-		public void onCheckedChanged(CompoundButton buttonView,
-				boolean isChecked) {
-			// TODO Auto-generated method stub
-			if (!isChecked) {
-				// Save off any changes
-				saveMatches();
-				mEditMode = false;
-				makeMatches();
-			} else {
-				// Go into edit Mode.
-				mEditMode = true;
-				makeMatches();
-			}
-			
-		}
+	private View.OnClickListener editMatchButtonClicked = new View.OnClickListener() {
 		
+		@Override
+		public void onClick(View v) {
+			LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			League league = appstate.getCurrentLeague();
+			View view = inflater.inflate(R.layout.dialog_edit_match, null);
+			TextView homeTextView = (TextView) view.findViewById(R.id.homeTextView);
+			TextView awayTextView = (TextView) view.findViewById(R.id.awayTextView);
+			final EditText homeScoreEditText = (EditText) view.findViewById(R.id.homeScoreEditText);
+			final EditText awayScoreEditText = (EditText) view.findViewById(R.id.awayScoreEditText);
+			final Button dateButton = (Button) view.findViewById(R.id.dateButton);
+			AlertDialog.Builder editMatch = new AlertDialog.Builder(DefaultActivity.this);
+			editMatch.setView(view);
+			editMatch.setTitle(R.string.fixtureform);
+			Match match = (Match) v.getTag();
+			homeTextView.setText(league.GetTeam(match.getmHomeTeamId())
+					.getmName());
+			awayTextView.setText(league.GetTeam(match.getmAwayTeamId())
+					.getmName());
+			dateButton.setText(DateFormat.format("dd/MMM", match.getmDate()));
+			if (match.IsPlayed()) {
+				homeScoreEditText.setText(match.getmHomeGoals().toString());
+				awayScoreEditText.setText(match.getmAwayGoals().toString());
+			} else {
+				homeScoreEditText.setText(" ");
+				awayScoreEditText.setText(" ");
+			}
+			//TODO add data picker and add to Date Button
+			
+			editMatch.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			editMatch.setNegativeButton(R.string.cancel, null);
+			editMatch.show();
+		}
 	};
 
 	protected void saveMatches() {

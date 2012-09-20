@@ -89,16 +89,7 @@
 
 </Button>
                         
-                    </LinearLayout>
-
-                    <ToggleButton
-                        android:id="@+id/toggleButtonEditResults"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textOff="@string/edit"
-                        android:textOn="@string/edit" >
-
-                    </ToggleButton>"
+                    </LinearLayout>"
 
                     <ScrollView
                         android:layout_width="match_parent"
