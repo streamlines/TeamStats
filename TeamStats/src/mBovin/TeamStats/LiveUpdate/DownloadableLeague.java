@@ -4,6 +4,7 @@ public class DownloadableLeague {
 	public int 	id;
 	public String Name;
 	public String Country;
+	public boolean Selected = false;
 	
 	/**
 	 * @param object

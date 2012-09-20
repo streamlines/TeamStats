@@ -24,8 +24,6 @@
  */
 package mBovin.TeamStats;
 
-import java.util.ArrayList;
-
 import mBovin.TeamStats.Core.League;
 import mBovin.TeamStats.Core.LeagueBinaryFile;
 
@@ -38,8 +36,6 @@ public class AppState {
 	private String		mCurrentSeason;
 	private int 		mleagueNameCount;
 	private String[]	mLeagueNames 		= new String[0];
-	private int			mdownloadLeagueCount;
-	private ArrayList<Integer>		mDownloadLeagueList = new ArrayList<Integer>();
 	private String		mLiveUpdateLog;
 	
 	private LeagueViewMode mMode = LeagueViewMode.Table;
@@ -135,13 +131,6 @@ public class AppState {
 		this.mMode = mMode;
 	}
 
-	/**
-	 * @return the mDownloadLeagueList
-	 */
-	public ArrayList<Integer> getmDownloadLeagueList() {
-		return mDownloadLeagueList;
-	}
-
 	public void Load(SharedPreferences savedData) {
 		mCurrentLeaguename = savedData.getString("CURRENTLEAGUENAME", null);
 		mCurrentSeason = savedData.getString("CURRENTSEASON", null);
@@ -150,11 +139,6 @@ public class AppState {
 		for (int i = 0; i < mleagueNameCount; i++) {
 			mLeagueNames[i] = savedData.getString("LEAGUENAME" + i, null);
 		}
-		mdownloadLeagueCount = savedData.getInt("DOWNLOADCOUNT", 0);
-		mDownloadLeagueList.clear();
-		for (int i = 0; i < mdownloadLeagueCount; i++) {
-			mDownloadLeagueList.add(savedData.getInt("Download" + i, 0));
-		}	
 	}
 	
 	public void Save(SharedPreferences savedData) {
@@ -165,10 +149,6 @@ public class AppState {
 		for (int i = 0; i < mleagueNameCount; i++) {
 			preferenceEditor.putString("LEAGUENAME" + i, mLeagueNames[i]);
 		}
-		preferenceEditor.putInt("DOWNLOADCOUNT", mdownloadLeagueCount);
-		for (int i = 0; i < mdownloadLeagueCount; i++) {
-			preferenceEditor.putInt("Download" + i, mDownloadLeagueList.get(i));
-		}	
 		preferenceEditor.apply();
 	}
 	

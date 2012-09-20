@@ -39,6 +39,7 @@ import java.util.Map;
 import mBovin.TeamStats.Core.*;
 import mBovin.TeamStats.LiveUpdate.LeagueDownloader;
 import mBovin.TeamStats.LiveUpdate.LeagueDownloader.LeagueDownloadListener;
+import mBovin.TeamStats.LiveUpdate.LeagueListDatabaseConnector;
 import mBovin.TeamStats.Utils.utils;
 
 import android.app.Activity;
@@ -49,6 +50,7 @@ import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -100,6 +102,7 @@ public class DefaultActivity extends TabActivity {
 	private SharedPreferences savedData;
 	private Integer currentround;
 	private boolean mEditMode;
+	private LeagueListDatabaseConnector dbConnector;
 	
 	private UIMode mode;
 
@@ -108,6 +111,7 @@ public class DefaultActivity extends TabActivity {
 		setContentView(R.layout.main);
 		savedData = getSharedPreferences("TeamStats", MODE_PRIVATE);
 		appstate.Load(savedData);
+		dbConnector = new LeagueListDatabaseConnector(this);
 		
 		mLeagues = new HashMap<String, HashMap<String, String>>();
 		currentround = 1;
@@ -270,16 +274,17 @@ public class DefaultActivity extends TabActivity {
 		
 	}
 	
-	protected void SelectLeaguesForDownload() {
-		// TODO Auto-generated method stub - Go to Live Update Select Form.
-		
+	private void SelectLeaguesForDownload() {
+		Intent intent = new Intent(DefaultActivity.this, LiveUpdateSelectActivity.class);
+		startActivity(intent);
 	}
 
 	private void DownloadSelectedLeagues() {
-		if (appstate.getmDownloadLeagueList().size() > 0) {
+		if (dbConnector.getSelectedCount() > 0) {
 			// Download each league in order.
+			LeagueDownloader download = new LeagueDownloader(dbConnector.getSelected(), DefaultActivity.this, MultiLeaguedownload);
 			
-			LookForLeagues();
+			download.execute();
 		} else {
 			Toast.makeText(this, R.string.noleagues,Toast.LENGTH_LONG).show();
 		}
@@ -296,6 +301,22 @@ public class DefaultActivity extends TabActivity {
 		public void onLeagueDownloaded(String league) {
 			if (league != null) {
 				ShowLeague();
+			} else {
+				Toast errorToast = Toast.makeText(getBaseContext(), getString(mBovin.TeamStats.R.string.noconnection2), Toast.LENGTH_LONG);
+				errorToast.setGravity(Gravity.CENTER, 0, 0);
+				errorToast.show();
+			}
+		}
+		
+	};
+	
+	LeagueDownloadListener MultiLeaguedownload = new LeagueDownloadListener() {
+
+		@Override
+		public void onLeagueDownloaded(String league) {
+			if (league != null) {
+				
+				LookForLeagues();
 			} else {
 				Toast errorToast = Toast.makeText(getBaseContext(), getString(mBovin.TeamStats.R.string.noconnection2), Toast.LENGTH_LONG);
 				errorToast.setGravity(Gravity.CENTER, 0, 0);

@@ -22,10 +22,11 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/listView1"
+    <ExpandableListView
+        android:id="@+id/leagueExpandListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
-
+        android:layout_height="wrap_content" 
+        >
+    </ExpandableListView>
+	
 </LinearLayout>
