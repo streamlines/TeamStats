@@ -14,7 +14,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class LeagueListDatabaseConnector {
 	
 	private static final String DATABASE_NAME = "LeagueList";
-	private static final int DATABASE_VERSION = 0;
+	private static final int DATABASE_VERSION = 1;
 	private SQLiteDatabase database;
 	private DatabaseOpenHelper dbOpenHelper;
 	
@@ -63,15 +63,55 @@ public class LeagueListDatabaseConnector {
 		close();
 	}
 	
-	public Cursor getAllCountries() {
-		return database.query(true, CURRENT_TABLE, new String[] {COUNTRY}, null, null, null, null, COUNTRY, null);
+	public List<DownloadableLeague> getAllCountries() {
+		open();
+		Cursor cursor =  database.query(true, CURRENT_TABLE, new String[] {COUNTRY}, null, null, null, null, COUNTRY, null);
+		List<DownloadableLeague> leagues = new ArrayList<DownloadableLeague>();
+		for (int i = 0; i < cursor.getCount(); i++) {
+			DownloadableLeague league = new DownloadableLeague();
+			cursor.moveToPosition(i);
+			league.Country = cursor.getString(cursor.getColumnIndex(COUNTRY));
+			leagues.add(league);
+		}
+		close();
+		return leagues;
 	}
 	
-	public Cursor getLeagues(String country) {
-		return database.query(CURRENT_TABLE, new String[] {ID, COUNTRY, LEAGUE, SELECTED}, COUNTRY + "=" + country, null, null, null, LEAGUE,null);
+	public List<DownloadableLeague>  getAllLeagues() {
+		open();
+		Cursor cursor = database.query(CURRENT_TABLE, new String[] {ID, COUNTRY, LEAGUE, SELECTED}, null, null, null, null, LEAGUE,null);
+		List<DownloadableLeague> leagues = new ArrayList<DownloadableLeague>();
+		for (int i = 0; i < cursor.getCount(); i++) {
+			DownloadableLeague league = new DownloadableLeague();
+			cursor.moveToPosition(i);
+			league.Name = cursor.getString(cursor.getColumnIndex(LEAGUE));
+			league.Country = cursor.getString(cursor.getColumnIndex(COUNTRY));
+			league.id = cursor.getInt(cursor.getColumnIndex(ID));
+			leagues.add(league);
+		}
+		close();
+		return leagues;
+	}
+
+	
+	public List<DownloadableLeague>  getLeagues(String country) {
+		open();
+		Cursor cursor = database.query(CURRENT_TABLE, new String[] {ID, COUNTRY, LEAGUE, SELECTED}, COUNTRY + "=" + country, null, null, null, LEAGUE,null);
+		List<DownloadableLeague> leagues = new ArrayList<DownloadableLeague>();
+		for (int i = 0; i < cursor.getCount(); i++) {
+			DownloadableLeague league = new DownloadableLeague();
+			cursor.moveToPosition(i);
+			league.Name = cursor.getString(cursor.getColumnIndex(LEAGUE));
+			league.Country = cursor.getString(cursor.getColumnIndex(COUNTRY));
+			league.id = cursor.getInt(cursor.getColumnIndex(ID));
+			leagues.add(league);
+		}
+		close(); 
+		return leagues;
 	}
 	
-	List<DownloadableLeague> getCurrent() {
+	public List<DownloadableLeague> getCurrent() {
+		open();
 		Cursor cursor = database.query(CURRENT_TABLE,new String[] {ID, COUNTRY, LEAGUE}	 , null, null, null, null, null);
 		List<DownloadableLeague> leagues = new ArrayList<DownloadableLeague>();
 		for (int i = 0; i < cursor.getCount(); i++) {
@@ -82,8 +122,33 @@ public class LeagueListDatabaseConnector {
 			league.id = cursor.getInt(cursor.getColumnIndex(ID));
 			leagues.add(league);
 		}
+		close();
 		return leagues;
 	}
+	
+	public int getSelectedCount() {
+		open();
+		Cursor cursor = database.query(CURRENT_TABLE,new String[] {ID}	 , SELECTED + " = true" , null, null, null, null);
+		// TODO Auto-generated method stub
+		return cursor.getCount();
+	}
+	
+	public List<DownloadableLeague> getSelected() {
+		open();
+		Cursor cursor = database.query(CURRENT_TABLE,new String[] {ID, COUNTRY, LEAGUE}	 , SELECTED + " = true", null, null, null, null);
+		List<DownloadableLeague> leagues = new ArrayList<DownloadableLeague>();
+		for (int i = 0; i < cursor.getCount(); i++) {
+			DownloadableLeague league = new DownloadableLeague();
+			cursor.moveToPosition(i);
+			league.Name = cursor.getString(cursor.getColumnIndex(LEAGUE));
+			league.Country = cursor.getString(cursor.getColumnIndex(COUNTRY));
+			league.id = cursor.getInt(cursor.getColumnIndex(ID));
+			leagues.add(league);
+		}
+		close();
+		return leagues;
+	}
+
 	
 	private class DatabaseOpenHelper extends SQLiteOpenHelper{
 
@@ -96,11 +161,11 @@ public class LeagueListDatabaseConnector {
 		public void onCreate(SQLiteDatabase db) {
 			String createQuery = "CREATE TABLE " + CURRENT_TABLE + 
 					"(" + ROWID + " integer primary key autoincrement," + ID + " integer, " + 
-					COUNTRY + " TEXT, " + LEAGUE + " TEXT, " + SELECTED + " BOOLEAN;";
+					COUNTRY + " TEXT, " + LEAGUE + " TEXT, " + SELECTED + " BOOLEAN);";
 			db.execSQL(createQuery);
 			createQuery = "CREATE TABLE " + ARCHIVE_TABLE + 
 					"(" + ROWID + " integer primary key autoincrement," + ID + " integer, " + 
-					COUNTRY + " TEXT, " + LEAGUE + " TEXT, " + SEASON + " TEXT;";
+					COUNTRY + " TEXT, " + LEAGUE + " TEXT, " + SEASON + " TEXT);";
 			db.execSQL(createQuery);
 		}
 
@@ -111,5 +176,6 @@ public class LeagueListDatabaseConnector {
 		}
 		
 	}
+
 
 }

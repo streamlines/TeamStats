@@ -24,6 +24,7 @@ import android.util.Log;
 
 // Creates static helper functions.
 public class utils {
+	private static final String TAG = "Utils.java";
 
 	public static Document DownloadXMLDocument(String urlstring) {
 		HttpGet uri = new HttpGet(urlstring);
@@ -46,24 +47,20 @@ public class utils {
 		}
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		Document doc = null;
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(resp.getEntity().getContent());
-			return doc;
+			doc = builder.parse(resp.getEntity().getContent());
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, e.toString());
 		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, e.toString());
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, e.toString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, e.toString());
 		}
-		return null;
+		return doc;
 	}
 		
 	public static File DownloadFile(String urlString) {	
