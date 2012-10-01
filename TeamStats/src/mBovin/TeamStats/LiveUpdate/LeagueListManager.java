@@ -40,6 +40,7 @@ public class LeagueListManager extends AsyncTask<String, Object, Object>{
 	private LeagueListDatabaseConnector mLeagueListDatabaseConnector; 
 	
 	private List<DownloadableLeague> mAddedLeagueList;
+	private List<DownloadableArchive> mArchiveLeagueList;
 	private Context mContext;
 	
 	public LeagueListManager(LeagueListDatabaseConnector db, newLeagueListener listener, Context context) {
@@ -63,7 +64,7 @@ public class LeagueListManager extends AsyncTask<String, Object, Object>{
 			} else if (arg0[0].equals(ALL_LEAGUES)) {
 				getAllLeagues();
 			} else if (arg0[0].equals(ARCHIVE)) {
-					//getArchiveLeagues();
+				getArchiveLeagues();
 			} else if (arg0[0].equals(DOWNLOAD)) {
 				
 			} else if (arg0[0].equals(DOWNLOAD_ARCHIVE)) {
@@ -121,7 +122,35 @@ public class LeagueListManager extends AsyncTask<String, Object, Object>{
 		}
 		return null;
 	}
-	
+
+	private List<DownloadableArchive> ParseArchiveXML(String urlString) {
+		try {
+			URL url = new URL(urlString);
+			
+			SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+			SAXParser parser = saxParserFactory.newSAXParser();
+			
+			XMLReader xmlReader = parser.getXMLReader();
+			DownloadableArchiveHandler myHandler = new DownloadableArchiveHandler();
+			xmlReader.setContentHandler(myHandler);
+			
+			xmlReader.parse(new InputSource(url.openStream()));
+			
+			return myHandler.getParsedData();
+			
+		} catch (SAXException e) {
+			Log.e(TAG, "Issue with Parser");
+			Log.e(TAG, e.toString());
+		} catch (MalformedURLException e) {
+			Log.e(TAG, e.toString());
+		} catch (ParserConfigurationException e) {
+			Log.e(TAG, e.toString());
+		} catch (IOException e) {
+			Log.e(TAG, e.toString());
+		}
+		return null;
+	}
+
 	private void getAllLeagues() {
 		mAddedLeagueList = mLeagueListDatabaseConnector.getAllLeagues();
 		if (mAddedLeagueList.size() == 0 ) {
@@ -136,6 +165,9 @@ public class LeagueListManager extends AsyncTask<String, Object, Object>{
 		}
 	}
 	
+	private void getArchiveLeagues() {
+		mArchiveLeagueList = ParseArchiveXML(cArchivelistURL);
+	}
 
 	private List<DownloadableLeague> CreateAddedLeagueList(List<DownloadableLeague> oldList,
 			List<DownloadableLeague> newList) {
