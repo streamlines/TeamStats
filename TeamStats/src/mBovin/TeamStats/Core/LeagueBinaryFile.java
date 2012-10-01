@@ -213,7 +213,7 @@ public class LeagueBinaryFile implements ILeagueStore {
 			match.setmRound(ds.read());
 			ds.read(shortBuffer);
 			int year = ((shortBuffer[0] & 0xFF) | (shortBuffer[1] & 0xFF) << 8);
-			int month = ds.read();
+			int month = ds.read() - 1;
 			int day = ds.read();
 			match.setmHomeTeamId(ds.read());
 			match.setmAwayTeamId(ds.read());
