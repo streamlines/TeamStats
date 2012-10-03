@@ -67,11 +67,13 @@ public class LeagueDatabase implements ILeagueStore {
 	private static final String cAwayGoals = "AWAYGOALS";
 	
 	private String mDatabasename;
+	private String mFilename;
 	private dbOpenHelper mDatabaseHelper;
 	private SQLiteDatabase mDatabase;
 	
-	public LeagueDatabase(Context context, String Dbname) {
+	public LeagueDatabase(Context context, String Dbname, String fileName) {
 		mDatabasename =  Dbname;
+		mFilename = fileName;
 		mDatabaseHelper = new dbOpenHelper(context, mDatabasename, null, cFileVersion);
 	}
 	
@@ -90,7 +92,7 @@ public class LeagueDatabase implements ILeagueStore {
 		mDatabase.delete(cHeader, null, null);
 		mDatabase.delete(cTeams, null, null);
 		mDatabase.delete(cMatches, null, null);
-		LeagueBinaryFile binaryFile = new LeagueBinaryFile(mDatabasename);
+		LeagueBinaryFile binaryFile = new LeagueBinaryFile(mFilename);
 		binaryFile.LoadHeader(league);
 		SaveHeader(league);
 		SaveTeams(league, (Team[]) binaryFile.LoadTeams(league).toArray());
@@ -141,7 +143,7 @@ public class LeagueDatabase implements ILeagueStore {
 			league.setmTableLines(cursor.getLong(cursor.getColumnIndex(cTableLines)));
 		} else {
 			// No Data load from File
-			LeagueBinaryFile binaryFile = new LeagueBinaryFile(mDatabasename);
+			LeagueBinaryFile binaryFile = new LeagueBinaryFile(mFilename);
 			binaryFile.LoadHeader(league);
 			SaveHeader(league);
 		}
@@ -160,7 +162,7 @@ public class LeagueDatabase implements ILeagueStore {
 			}
 		} else {
 			// No Data load from File
-			LeagueBinaryFile binaryFile = new LeagueBinaryFile(mDatabasename);
+			LeagueBinaryFile binaryFile = new LeagueBinaryFile(mFilename);
 			SaveTeams(league, (Team[]) binaryFile.LoadTeams(league).toArray());
 		}
 		return listTeams;
@@ -188,7 +190,7 @@ public class LeagueDatabase implements ILeagueStore {
 				matches.add(LoadMatch(league,i,cursor));
 			}
 		} else {
-			LeagueBinaryFile binaryFile = new LeagueBinaryFile(mDatabasename);
+			LeagueBinaryFile binaryFile = new LeagueBinaryFile(mFilename);
 			SaveMatches(league, binaryFile.LoadMatches(league));
 		}
 		return matches;

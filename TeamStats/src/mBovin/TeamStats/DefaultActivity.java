@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +46,7 @@ import mBovin.TeamStats.Utils.utils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
@@ -65,11 +67,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -264,7 +268,7 @@ public class DefaultActivity extends TabActivity {
 	
 	
 	private void NewLeague() {
-		// CALL TO NEW LEAGUE Activity
+		//TODO CALL TO NEW LEAGUE Activity
 		
 	}
 	
@@ -329,7 +333,7 @@ public class DefaultActivity extends TabActivity {
 		String[] fileNames = fileList();
 		for (String fileName : fileNames) {
 			if (fileName.contains(".ts")) {
-				AddLeague(path + File.separator + fileName);
+				AddLeague(path + File.separator + fileName, fileName.replace(".ts",""));
 			}
 		}
 		
@@ -344,7 +348,7 @@ public class DefaultActivity extends TabActivity {
 						InputStream iStream = assets.open("leagues/" + fileName);
 						OutputStream oStream = new FileOutputStream(path + File.separator + output);
 						utils.CopyFile(iStream, oStream);
-						AddLeague(path + File.separator + output);
+						AddLeague(path + File.separator + output, fileName.replace(".ts",""));
 					}
 				}
 			} catch (IOException e) {
@@ -355,10 +359,10 @@ public class DefaultActivity extends TabActivity {
 	
 
 	
-	private void AddLeague(String fileName) {
-		LeagueBinaryFile leaguefile;
+	private void AddLeague(String fileName, String leaguename) {
+		LeagueDatabase leaguefile;
 		League league;
-		leaguefile = new LeagueBinaryFile(fileName);
+		leaguefile = new LeagueDatabase(this, leaguename, fileName);
 		league = new League(leaguefile);
 		
 		HashMap<String,String> seasons = mLeagues.get(league.getmName());
@@ -658,7 +662,7 @@ public class DefaultActivity extends TabActivity {
 			AlertDialog.Builder editMatch = new AlertDialog.Builder(DefaultActivity.this);
 			editMatch.setView(view);
 			editMatch.setTitle(R.string.fixtureform);
-			Match match = (Match) v.getTag();
+			final Match match = (Match) v.getTag();
 			homeTextView.setText(league.GetTeam(match.getmHomeTeamId())
 					.getmName());
 			awayTextView.setText(league.GetTeam(match.getmAwayTeamId())
@@ -672,12 +676,37 @@ public class DefaultActivity extends TabActivity {
 				awayScoreEditText.setText(" ");
 			}
 			//TODO add data picker and add to Date Button
+			dateButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View button) {
+					// TODO Auto-generated method stub
+					DatePickerDialog dialog = new DatePickerDialog(DefaultActivity.this,
+							new DatePickerDialog.OnDateSetListener() {
+
+								@Override
+								public void onDateSet(DatePicker picker, int year,
+										int Month, int Day) {
+									// TODO Auto-generated method stub
+									Calendar cal = Calendar.getInstance();
+									cal.set(year, Month, Day);
+									match.setmDate(cal);
+								}
+						
+					},match.getmDate().get(Calendar.YEAR),match.getmDate().get(Calendar.MONTH),
+					match.getmDate().get(Calendar.DAY_OF_MONTH));
+					dialog.show();
+				}
+				
+			});
 			
 			editMatch.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					// TODO Auto-generated method stub
+					match.setmHomeGoals(Integer.parseInt(homeScoreEditText.getText().toString()));
+					match.setmAwayGoals(Integer.parseInt(awayScoreEditText.getText().toString()));
 					
 				}
 			});
